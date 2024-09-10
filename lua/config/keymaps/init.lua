@@ -37,14 +37,6 @@ function M.get_plugin(plugin)
   return lazy_config_avail and lazy_config.spec.plugins[plugin] or nil
 end
 
-
-local function apply(func, ...)
-  local args = {...}
-  return function(...)
-    return func(table.unpack(args), ...)
-  end
-end
-
 function M.is_installed(plugin)
   return function() return M.get_plugin(plugin) ~= nil end
 end
@@ -139,7 +131,7 @@ M.mappings = {
     { "<Leader>gb", M.cmd("Fugit2Blame"), desc = "Open blame view", cond = enable_fugit2 },
     { "<Leader>gg", M.cmd("Fugit2Graph"), desc = "Open graph view", cond = enable_fugit2 },
 
-    { "<Leader>gv", M.cmd("Neogit"), desc = "Open Neogit", cond = enable_neogit },
+    { "<Leader>gv", M.cmd("Neogit kind=floating"), desc = "Open Neogit", cond = enable_neogit },
   },
 }
 
