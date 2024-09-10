@@ -1,36 +1,21 @@
 # My Neovim config
 
-**NOTE:** This is a work in progress.
+**NOTE:** This is a work in progress. 🛠️
 
 This branch is my attempt to move away from AstroNvim and just use Lazy.
 Comming from AstroNvim, this config will be inspired by AstroNvim, but
-more minimal for my usecase, specifically C++ development.
+more minimal for my usecase, specifically C++ development. I don't need
+to support everything possible like Astro does.
 
-## 🛠️ Installation
+## TODO:
+- [ ] Finish setting up config abstractions. I want to have a declarative
+config of things I want to enable/disable, possibly load from a yaml file.
+- [ ] Setup [cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)
+- [ ] Setup [neotest](https://github.com/nvim-neotest/neotest)
+- [ ] Setup [neotest-gtest](https://github.com/alfaix/neotest-gtest)
+- [ ] Setup [hydra.nvim](https://github.com/nvimtools/hydra.nvim)
 
-#### Make a backup of your current nvim and shared folder
+### Much later, Wish list
+- [ ] A local godbolt clone using Treesitter and compile_commands.json
+- [ ] A decent assembly lsp that supports what gcc, clang, and msvc output
 
-```shell
-mv ~/.config/nvim ~/.config/nvim.bak
-mv ~/.local/share/nvim ~/.local/share/nvim.bak
-mv ~/.local/state/nvim ~/.local/state/nvim.bak
-mv ~/.cache/nvim ~/.cache/nvim.bak
-```
-
-#### Create a new user repository from this template
-
-Press the "Use this template" button above to create a new repository to store your user configuration.
-
-You can also just clone this repository directly if you do not want to track your user configuration in GitHub.
-
-#### Clone the repository
-
-```shell
-git clone https://github.com/<your_user>/<your_repository> ~/.config/nvim
-```
-
-#### Start Neovim
-
-```shell
-nvim
-```
