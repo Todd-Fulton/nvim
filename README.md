@@ -3,7 +3,7 @@
 **NOTE:** This is a work in progress. 🛠️
 
 This branch is my attempt to move away from AstroNvim and just use Lazy.
-Comming from AstroNvim, this config will be inspired by AstroNvim, but
+Coming from AstroNvim, this config will be inspired by AstroNvim, but
 more minimal for my usecase, specifically C++ development. I don't need
 to support everything possible like Astro does.
 
