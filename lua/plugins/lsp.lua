@@ -116,6 +116,7 @@ return {
       "hrsh7th/nvim-cmp",
       { "antosha417/nvim-lsp-file-operations", config = true },
       { "folke/neodev.nvim",                   opts = {} },
+      { "p00f/clangd_extensions.nvim" },
     },
     config = function()
       -- import lspconfig plugin
@@ -153,8 +154,47 @@ return {
 
           if not client then return end -- TODO: Report failure
           -- set keybinds
-
           parse_keymaps(client, default_lsp_keymaps, { buffer = ev.buf, silent = true })
+
+          -- TODO: Move this out to a generalized config, see:
+          -- https://github.com/AstroNvim/astrocommunity/blob/main/lua/astrocommunity/pack/cpp/init.lua
+          -- for an example.
+          if client.name == "clangd" then
+            require "clangd_extensions"
+            local wk = require "which-key"
+            wk.add({
+              "<Leader>lh",
+              "<CMD>ClangdSwitchSourceHeader<CR>",
+              desc = "switch source/header file",
+              buffer = ev.buf,
+              silent = true
+            })
+
+            local group = vim.api.nvim_create_augroup("clangd_no_inlay_hints_in_insert", { clear = true })
+
+            wk.add({
+              "<leader>ti",
+              function()
+                if require("clangd_extensions.inlay_hints").toggle_inlay_hints() then
+                  vim.api.nvim_create_autocmd("InsertEnter", {
+                    group = group,
+                    buffer = ev.buf,
+                    callback = require("clangd_extensions.inlay_hints").disable_inlay_hints
+                  })
+                  vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
+                    group = group,
+                    buffer = ev.buf,
+                    callback = require("clangd_extensions.inlay_hints").set_inlay_hints
+                  })
+                else
+                  vim.api.nvim_clear_autocmds({ group = group, buffer = ev.buf })
+                end
+              end,
+              buffer = ev.buf,
+              silent = true,
+              desc = "Toggle inlay hints"
+            })
+          end
         end,
       })
 
@@ -203,6 +243,7 @@ return {
     "hrsh7th/cmp-path",
     "onsails/lspkind.nvim", -- pictograms in completion
     "petertriho/cmp-git",
+    "p00f/clangd_extensions.nvim",
   },
   config = function()
     local cmp = require 'cmp'
@@ -241,6 +282,19 @@ return {
         format = lspkind.cmp_format {
           maxwidth = 50,
           ellipsis_char = "...",
+        },
+      },
+      sorting = {
+        priority_weight = 100,
+        comparators = {
+          cmp.config.compare.offset,
+          cmp.config.compare.exact,
+          cmp.config.compare.recently_used,
+          require("clangd_extensions.cmp_scores"),
+          cmp.config.compare.kind,
+          cmp.config.compare.sort_text,
+          cmp.config.compare.length,
+          cmp.config.compare.order,
         },
       },
       experimental = {
