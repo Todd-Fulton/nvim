@@ -19,3 +19,27 @@ config of things I want to enable/disable, possibly load from a yaml file.
 - [ ] A local godbolt clone using Treesitter and compile_commands.json
 - [ ] A decent assembly lsp that supports what gcc, clang, and msvc output
 
+
+## Plan for abstracting config
+```mermaid
+---
+title: Package and Config abstraction
+---
+flowchart LR
+    config["User Config"]
+    abs_config["Abstract Config"]
+    abs_package["Abstract Package"]
+    package["Abstract Package"]
+    config_ui["Configuration UI"]
+    plugin["Git repository
+    Local plugin
+    etc...
+    "]
+    lazy["Lazy nvim plugin manager"]
+    config --> abs_config 
+    package --> plugin
+    package --> lazy
+    package --> abs_config
+    config_ui --> abs_config
+    config_ui --> abs_package
+```
