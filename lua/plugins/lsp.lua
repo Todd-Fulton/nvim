@@ -1,4 +1,3 @@
-
 ---@class lsp.Keymap
 ---@field desc string
 
@@ -6,29 +5,34 @@
 ---@field group string
 
 
-local has_trouble = require'config.keymaps'.is_installed("trouble.nvim")
+local has_trouble = require 'config.keymaps'.is_installed("trouble.nvim")
 
 local default_lsp_keymaps = {
-  { "<Leader>l", group = "Lsp" },
+  { "<Leader>l",  group = "Lsp" },
   { "<Leader>ls", group = "Search" },
   ["textDocument/references"] = {
-    "<Leader>lsr", "<cmd>Telescope lsp_references<cr>",
+    "<Leader>lsr",
+    "<cmd>Telescope lsp_references<cr>",
     desc = "References"
   },
   ["textDocument/declaration"] = {
-    "<Leader>lsd", vim.lsp.buf.declaration,
+    "<Leader>lsd",
+    vim.lsp.buf.declaration,
     desc = "Go to declaration"
   },
   ["textDocument/definition"] = {
-    "<Leader>lsD", "<cmd>Telescope lsp_definitions<cr>",
+    "<Leader>lsD",
+    "<cmd>Telescope lsp_definitions<cr>",
     desc = "Definitions"
   },
   ["textDocument/implementation"] = {
-    "<Leader>lsi", "<cmd>Telescope lsp_implementations<cr>",
+    "<Leader>lsi",
+    "<cmd>Telescope lsp_implementations<cr>",
     desc = "Implementation"
   },
   ["textDocument/typeDefinitions"] = {
-    "<Leader>lst", "<cmd>Telescope lsp_type_definitions<cr>",
+    "<Leader>lst",
+    "<cmd>Telescope lsp_type_definitions<cr>",
     desc = "Type definitions"
   },
   ["textDocument/codeAction"] = {
@@ -38,23 +42,35 @@ local default_lsp_keymaps = {
     "<Leader>lr", vim.lsp.buf.rename, desc = "Smart rename"
   },
   ["textDocument/hover"] = { "K", vim.lsp.buf.hover, desc = "Show documentation" },
+  ["textDocument/format"] = { "<Leader>lf", vim.lsp.buf.format(), desc = "Format document" },
   ["textDocument/publishDiagnostics"] = {
-      { "<Leader>ld", group = "Diagnostics" },
-      {
-        "<Leader>ldb", "<cmd>Telescope diagnostics bufnr=0<cr>",
-        desc = "Buffer diagnostics"
-      },
-      { "<Leader>ldl", vim.diagnostic.open_float, desc = "Line diagnostics" },
-      { "<Leader>ldn", vim.diagnostic.goto_next, desc = "Next" },
-      { "<Leader>ldp", vim.diagnostic.goto_prev, desc = "Prev" },
-      { "[e", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
-      { "]e", vim.diagnostic.goto_next, desc = "Next diagnostic" },
-      { "<Leader>lx", group = "Trouble", cond = has_trouble },
-      { "<leader>lxw", "<cmd>Trouble diagnostics toggle<CR>", cond = has_trouble, desc = "Open trouble workspace diagnostics" },
-      { "<leader>lxd", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", cond = has_trouble, desc = "Open trouble document diagnostics" },
-      { "<leader>lxq", "<cmd>Trouble quickfix toggle<CR>", cond = has_trouble, desc = "Open trouble quickfix list" },
-      { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>", cond = has_trouble, desc = "Open trouble location list" },
-      { "<leader>lxt", "<cmd>Trouble todo toggle<CR>", cond = has_trouble, desc = "Open todos in trouble" },
+    { "<Leader>ld",  group = "Diagnostics" },
+    {
+      "<Leader>ldb",
+      "<cmd>Telescope diagnostics bufnr=0<cr>",
+      desc = "Buffer diagnostics"
+    },
+    { "<Leader>ldl", vim.diagnostic.open_float, desc = "Line diagnostics" },
+    { "<Leader>ldn", vim.diagnostic.goto_next,  desc = "Next" },
+    { "<Leader>ldp", vim.diagnostic.goto_prev,  desc = "Prev" },
+    { "[e",          vim.diagnostic.goto_prev,  desc = "Previous diagnostic" },
+    { "]e",          vim.diagnostic.goto_next,  desc = "Next diagnostic" },
+    { "<Leader>lx",  group = "Trouble",         cond = has_trouble },
+    {
+      "<leader>lxw",
+      "<cmd>Trouble diagnostics toggle<CR>",
+      cond = has_trouble,
+      desc = "Open trouble workspace diagnostics"
+    },
+    {
+      "<leader>lxd",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<CR>",
+      cond = has_trouble,
+      desc = "Open trouble document diagnostics"
+    },
+    { "<leader>lxq", "<cmd>Trouble quickfix toggle<CR>", cond = has_trouble, desc = "Open trouble quickfix list" },
+    { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>",  cond = has_trouble, desc = "Open trouble location list" },
+    { "<leader>lxt", "<cmd>Trouble todo toggle<CR>",     cond = has_trouble, desc = "Open todos in trouble" },
   }
 }
 
@@ -68,14 +84,14 @@ local function is_lsp_method(key)
 end
 
 local function parse_keymaps(client, mappings, opts)
-  local wk = require'which-key'
+  local wk = require 'which-key'
   local function loop(map)
     if is_keybinding(map) then
-        wk.add(vim.tbl_extend('keep', map, opts))
+      wk.add(vim.tbl_extend('keep', map, opts))
     else
       for k, v in pairs(map) do
         if is_lsp_method(k) then
-          if client.supports_method(k, {bufnr = opts.buffer}) then
+          if client.supports_method(k, { bufnr = opts.buffer }) then
             loop(v)
           end
         else
@@ -96,7 +112,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/nvim-cmp",
       { "antosha417/nvim-lsp-file-operations", config = true },
-      { "folke/neodev.nvim", opts = {} },
+      { "folke/neodev.nvim",                   opts = {} },
     },
     config = function()
       -- import lspconfig plugin
@@ -109,25 +125,25 @@ return {
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
       vim.lsp.handlers["textDocument/hover"] =
-      vim.lsp.with(
-        vim.lsp.handlers.hover,
-        {
-          border = "single"
-        }
-      )
+          vim.lsp.with(
+            vim.lsp.handlers.hover,
+            {
+              border = "single"
+            }
+          )
 
       vim.lsp.handlers["textDocument/signatureHelp"] =
-      vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        {
-          border = "single"
-        }
-      )
+          vim.lsp.with(
+            vim.lsp.handlers.signature_help,
+            {
+              border = "single"
+            }
+          )
 
       -- setup default configuration, keybindings, etc.
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-        callback = function (ev)
+        callback = function(ev)
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
           local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -161,7 +177,7 @@ return {
       )
 
       -- Load top level configs for modularity
-      local configs = require'config.lsp'
+      local configs = require 'config.lsp'
 
       -- Add cmp default_capabilities to each config, and call setup
       for server, config in pairs(configs) do
@@ -177,69 +193,69 @@ return {
       end
     end,
   }, {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "onsails/lspkind.nvim", -- pictograms in completion
-      "petertriho/cmp-git",
-    },
-    config = function()
-      local cmp = require'cmp'
-      local lspkind = require'lspkind'
-      cmp.setup ({
-        completion = {
-          completeopt = "menu,menuone,preview,noselect",
+  "hrsh7th/nvim-cmp",
+  event = "InsertEnter",
+  dependencies = {
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "onsails/lspkind.nvim", -- pictograms in completion
+    "petertriho/cmp-git",
+  },
+  config = function()
+    local cmp = require 'cmp'
+    local lspkind = require 'lspkind'
+    cmp.setup({
+      completion = {
+        completeopt = "menu,menuone,preview,noselect",
+      },
+      window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+      },
+      view = {
+        entries = "custom",
+      },
+      mapping = cmp.mapping.preset.insert({
+        ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
+        ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+        ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
+        ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
+        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+      }),
+      -- sources for autocompletion
+      sources = cmp.config.sources {
+        { name = "nvim_lsp" },
+        -- TODO: Install LuaSnip
+        -- { name = "luasnip" },
+        { name = "path" },
+        { name = "buffer",  keyword_length = 4, max_item_count = 5 },
+      },
+      -- configure lspkind
+      ---@diagnostic disable-next-line: missing-fields
+      formatting = {
+        format = lspkind.cmp_format {
+          maxwidth = 50,
+          ellipsis_char = "...",
         },
-        window =  {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        view = {
-          entries = "custom",
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
-          ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-          ["<C-e>"] = cmp.mapping.abort(), -- close completion window
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
-        }),
-        -- sources for autocompletion
-        sources = cmp.config.sources{
-          { name = "nvim_lsp" },
-          -- TODO: Install LuaSnip
-          -- { name = "luasnip" },
-          { name = "path" },
-          { name = "buffer", keyword_length = 4, max_item_count = 5 },
-        },
-        -- configure lspkind
-        ---@diagnostic disable-next-line: missing-fields
-        formatting = {
-          format = lspkind.cmp_format {
-            maxwidth = 50,
-            ellipsis_char = "...",
-          },
-        },
-        experimental = {
-          ghost_text = true,
-        },
-        ---@diagnostic disable-next-line: missing-fields
-        performance = {
-          max_view_entries = 100,
-        }
+      },
+      experimental = {
+        ghost_text = true,
+      },
+      ---@diagnostic disable-next-line: missing-fields
+      performance = {
+        max_view_entries = 100,
+      }
+    })
+    cmp.setup.filetype('gitcommit', {
+      sources = cmp.config.sources({
+        { name = 'git' },
+      }, {
+        { name = 'buffer' },
       })
-      cmp.setup.filetype('gitcommit', {
-        sources = cmp.config.sources({
-          { name = 'git' },
-        }, {
-            { name = 'buffer' },
-          })
-      })
-      require("cmp_git").setup()
-    end,
-  }
+    })
+    require("cmp_git").setup()
+  end,
+}
 }
