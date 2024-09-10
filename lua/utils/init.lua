@@ -13,11 +13,11 @@ end
 
 
 function M.script_path()
-  local str = debug.getinfo(2, 'S').source:sub(2)                  
-  if is_win() then                                                 
-    str = str:gsub('/', '\\')                                      
-  end                                                              
-  return str:match('(.*' .. get_path_separator() .. ')')           
+  local str = debug.getinfo(2, 'S').source:sub(2)
+  if is_win() then
+    str = str:gsub('/', '\\')
+  end
+  return str:match('(.*' .. get_path_separator() .. ')')
 end
 
 return M
