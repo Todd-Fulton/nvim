@@ -5,71 +5,8 @@
 ---@class lsp.Keygroup
 ---@field group string
 
--- TODO: Add documentation
--- Consider moving to a seperate lspconfig-config module/plugin
 
-
----@function
----@param plugin string
-local function is_installed(plugin)
-  return require("lazy.core.config").spec.plugins[plugin] ~= nil
-end
-
-local function apply(func, ...)
-  local args = {...}
-  return function(...) return func(table.unpack(args), ...) end
-end
-
-local has_trouble = apply(is_installed, "trouble.nvim")
-
----@type table string bool
---- Used to check if a key in a `lsp.KeymapSet` is a LPS method, in which case
---- the value of theKey/Value pair is `lsp.Keymap|(lsp.Keymap|lsp.Keygroup)[]`
-local LspMethods = {
-  ["textDocument/declaration"] = true,
-  ["textDocument/definition"] = true,
-  ["textDocument/typeDefinition"] = true,
-  ["textDocument/implementation"] = true,
-  ["textDocument/references"] = true,
-  ["textDocument/prepareCallHierarchy"] = true,
-  ["callHierarchy/incomingCalls"] = true,
-  ["callHierarchy/outgoingCalls"] = true,
-  ["textDocument/prepareTypeHierarchy"] = true,
-  ["typeHierarchy/supertypes"] = true,
-  ["typeHierarchy/subtypes"] = true,
-  ["textDocument/documentHighlight"] = true,
-  ["textDocument/documentLink"] = true,
-  ["documentLink/resolve"] = true,
-  ["textDocument/hover"] = true,
-  ["textDocument/codeLens"] = true,
-  ["codeLens/resolve"] = true,
-  ["workspace/codeLens/refresh"] = true,
-  ["textDocument/foldingRange"] = true,
-  ["textDocument/selectionRange"] = true,
-  ["textDocument/documentSymbol"] = true,
-  ["textDocument/semanticTokens"] = true,
-  ["textDocument/semanticTokens/full"] = true,
-  ["textDocument/semanticTokens/full/delta"] = true,
-  ["textDocument/semanticTokens/range"] = true,
-  ["textDocument/semanticTokens/refresh"] = true,
-  ["textDocument/inlayHint"] = true,
-  ["inlayHint/resolve"] = true,
-  ["workspace/inlayHint/refresh"] = true,
-  ["textDocument/inlineValue"] = true,
-  ["workspace/inlineValue/refresh"] = true,
-  ["textDocument/moniker"] = true,
-  ["textDocument/completion"] = true,
-  ["completionItem/resolve"] = true,
-  ["textDocument/publishDiagnostics"] = true,
-  ["textDocument/diagnostic"] = true,
-  ["workspace/diagnostic"] = true,
-  ["workspace/diagnostic/refresh"] = true,
-  ["textDocument/signatureHelp"] = true,
-  ["textDocument/codeAction"] = true,
-  ["codeAction/resolve"] = true,
-  ["textDocument/rename"] = true,
-  ["workspace/executeCommand"] = true,
-}
+local has_trouble = require'config.keymaps'.is_installed("trouble.nvim")
 
 local default_lsp_keymaps = {
   { "<Leader>l", group = "Lsp" },
@@ -127,28 +64,20 @@ local function is_keybinding(map)
 end
 
 local function is_lsp_method(key)
-  return type(key) == "string" and LspMethods[key] ~= nil
+  return type(key) == "string" and vim.lsp.handlers[key] ~= nil
 end
 
-
-
 local function parse_keymaps(client, mappings, opts)
-  local loop
-
-  local function handle_method(method, maps)
-    if client.supports_method(method, {bufnr = opts.buffer})
-    then
-      loop(maps)
-    end
-  end
-
-  loop = function(map)
+  local wk = require'which-key'
+  local function loop(map)
     if is_keybinding(map) then
-        require'which-key'.add(vim.tbl_extend('keep', map, opts))
+        wk.add(vim.tbl_extend('keep', map, opts))
     else
       for k, v in pairs(map) do
         if is_lsp_method(k) then
-          handle_method(k, v)
+          if client.supports_method(k, {bufnr = opts.buffer}) then
+            loop(v)
+          end
         else
           loop(v)
         end
