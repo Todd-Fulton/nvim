@@ -44,3 +44,13 @@ flowchart LR
     config_ui --> abs_config
     config_ui --> abs_package
 ```
+
+### TODO:
+Consider "Package Provider" and "Config Provider"
+sources. A "Package Provider" can implement driving
+the plugin manager and using "Abstract Configs" to
+configure plugins, thus providing a "Package".
+
+"Config Provider" would be relatively stable, but
+can be a UI or config file in yaml, json, or a raw
+lua file with custom callbacks.
