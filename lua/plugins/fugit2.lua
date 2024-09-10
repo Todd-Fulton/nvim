@@ -1,7 +1,7 @@
 return {
   'SuperBo/fugit2.nvim',
   opts = {
-    width = 100,
+    width = 150,
   },
   dependencies = {
     'MunifTanjim/nui.nvim',
