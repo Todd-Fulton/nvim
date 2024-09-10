@@ -232,7 +232,7 @@ return {
       )
 
       -- Load top level configs for modularity
-      local configs = require'lsp-configs'
+      local configs = require'config.lsp'
 
       -- Add cmp default_capabilities to each config, and call setup
       for server, config in pairs(configs) do
