@@ -10,7 +10,7 @@ to support everything possible like Astro does.
 ## TODO:
 - [ ] Finish setting up config abstractions. I want to have a declarative
 config of things I want to enable/disable, possibly load from a yaml file.
-- [ ] Setup [cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)
+- [x] Setup [cmake-tools.nvim](https://github.com/Civitasv/cmake-tools.nvim)
 - [ ] Setup [neotest](https://github.com/nvim-neotest/neotest)
 - [ ] Setup [neotest-gtest](https://github.com/alfaix/neotest-gtest)
 - [ ] Setup [hydra.nvim](https://github.com/nvimtools/hydra.nvim)
