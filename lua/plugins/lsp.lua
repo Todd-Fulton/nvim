@@ -42,7 +42,7 @@ local default_lsp_keymaps = {
     "<Leader>lr", vim.lsp.buf.rename, desc = "Smart rename"
   },
   ["textDocument/hover"] = { "K", vim.lsp.buf.hover, desc = "Show documentation" },
-  ["textDocument/format"] = { "<Leader>lf", vim.lsp.buf.format(), desc = "Format document" },
+  ["textDocument/format"] = { "<Leader>lf", vim.lsp.buf.format, desc = "Format document" },
   ["textDocument/publishDiagnostics"] = {
     { "<Leader>ld",  group = "Diagnostics" },
     {
@@ -83,6 +83,9 @@ local function is_lsp_method(key)
   return type(key) == "string" and vim.lsp.handlers[key] ~= nil
 end
 
+--- TODO: lsp.Keymap should support a way for functions to request arbitrary arguments
+--- such as client id, buf number, opts, etc...
+--- NOTE: From what context will we derive these arguments?
 local function parse_keymaps(client, mappings, opts)
   local wk = require 'which-key'
   local function loop(map)
