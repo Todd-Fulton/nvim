@@ -29,7 +29,7 @@ flowchart LR
     config["User Config"]
     abs_config["Abstract Config"]
     abs_package["Abstract Package"]
-    package["Abstract Package"]
+    package["Package"]
     config_ui["Configuration UI"]
     plugin["Git repository
     Local plugin
