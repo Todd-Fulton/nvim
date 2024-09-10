@@ -37,17 +37,45 @@ function M.get_plugin(plugin)
   return lazy_config_avail and lazy_config.spec.plugins[plugin] or nil
 end
 
---- Check if a plugin is defined in lazy. Useful with lazy loading when a plugin is not necessarily loaded yet
----@param plugin string The plugin to search for
----@return boolean available # Whether the plugin is available
-function M.is_available(plugin) return M.get_plugin(plugin) ~= nil end
 
-local enable_bufkeys = function()
-  return M.is_available("bufferline.nvim")
+local function apply(func, ...)
+  local args = {...}
+  return function(...)
+    return func(table.unpack(args), ...)
+  end
+end
+
+function M.is_installed(plugin)
+  return function() return M.get_plugin(plugin) ~= nil end
+end
+
+
+function M.exclusive(plugin, ...)
+  local nos = {...}
+  return function()
+    if M.get_plugin(plugin) == nil then return false end
+    for _, n in ipairs(nos) do
+      if M.get_plugin(n) ~= nil then
+        return false
+      end
+      return true
+    end
+  end
+end
+
+local enable_bufkeys = M.is_installed("bufferline.nvim")
+
+
+-- TODO: Lift logic to packs of common plugins for which only one can be installed
+local enable_fugit2 = M.exclusive("fugit2.nvim", "neogit")
+local enable_neogit = M.exclusive("neogit", "fugit2.nvim")
+
+
+function M.cmd(command)
+  return "<cmd>" .. command .. "<cr>"
 end
 
 -- TODO: Set up dynamic key bindings using conditions, events, and which-key expand
-
 M.mappings = {
   {
     mode = { "i" },
@@ -71,13 +99,13 @@ M.mappings = {
     mode = { "n" },
     -- Buffer manipulation
     { "<Leader>b", group = "Buffers", cond = enable_bufkeys },
-    { "<Leader>bb", "<CMD>BufferLinePick<CR>", desc = "Pick", cond = enable_bufkeys },
-    { "<Leader>bn", "<CMD>BufferLineCycleNext<CR>", desc = "Next", cond = enable_bufkeys },
-    { "<Leader>bp", "<CMD>BufferLineCyclePrev<CR>", desc = "Prev", cond = enable_bufkeys },
-    { "<Leader>br", "<CMD>BufferLineCloseRight<CR>", desc = "Close buffers to the Left", cond = enable_bufkeys },
-    { "<Leader>bl", "<CMD>BufferLineCloseLeft<CR>", desc = "Close buffers to the Right", cond = enable_bufkeys },
-    { "<C-m>", "<CMD>BufferLineCycleNext<CR>", desc = "Next", cond = enable_bufkeys },
-    { "<C-n>", "<CMD>BufferLineCyclePrev<CR>", desc = "Prev", cond = enable_bufkeys },
+    { "<Leader>bb", M.cmd("BufferLinePick"), desc = "Pick", cond = enable_bufkeys },
+    { "<Leader>bn", M.cmd("BufferLineCycleNext"), desc = "Next", cond = enable_bufkeys },
+    { "<Leader>bp", M.cmd("BufferLineCyclePrev"), desc = "Prev", cond = enable_bufkeys },
+    { "<Leader>br", M.cmd("BufferLineCloseRight"), desc = "Close buffers to the Left", cond = enable_bufkeys },
+    { "<Leader>bl", M.cmd("BufferLineCloseLeft"), desc = "Close buffers to the Right", cond = enable_bufkeys },
+    { "<C-m>", M.cmd("BufferLineCycleNext"), desc = "Next", cond = enable_bufkeys },
+    { "<C-n>", M.cmd("BufferLineCyclePrev"), desc = "Prev", cond = enable_bufkeys },
     {
       "<Leader>c",
       function()
@@ -103,6 +131,15 @@ M.mappings = {
       end,
       desc = "Toggle search highlights"
     },
+
+    -- Git
+    { "<Leader>g", group = "Git"},
+    { "<Leader>gv", M.cmd("Fugit2"), desc = "Open Fugit2", cond = enable_fugit2 },
+    { "<Leader>gd", M.cmd("Fugit2Diff"), desc = "Open diff view", cond = enable_fugit2 },
+    { "<Leader>gb", M.cmd("Fugit2Blame"), desc = "Open blame view", cond = enable_fugit2 },
+    { "<Leader>gg", M.cmd("Fugit2Graph"), desc = "Open graph view", cond = enable_fugit2 },
+
+    { "<Leader>gv", M.cmd("Neogit"), desc = "Open Neogit", cond = enable_neogit },
   },
 }
 
