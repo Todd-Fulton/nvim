@@ -71,7 +71,49 @@ local default_lsp_keymaps = {
     { "<leader>lxq", "<cmd>Trouble quickfix toggle<CR>", cond = has_trouble, desc = "Open trouble quickfix list" },
     { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>",  cond = has_trouble, desc = "Open trouble location list" },
     { "<leader>lxt", "<cmd>Trouble todo toggle<CR>",     cond = has_trouble, desc = "Open todos in trouble" },
-  }
+
+    ["textDocument/codeLens"] = {
+      { "<Leader>ll", group = "Codelens" },
+      {
+        "<Leader>llt",
+        function()
+          vim.g.codelens_enabled = not vim.g.codelens_enabled
+        end,
+        desc = "Toggle codelens"
+      },
+    },
+  },
+}
+
+local default_aucmds = {
+  ["textDocument/codeLens"] = {
+    function (bufnr, client)
+      local group = vim.api.nvim_create_augroup("lsp_codelens_refresh", {clear = true})
+
+      vim.api.nvim_create_autocmd({"BufEnter", "InsertLeave"}, {
+        buffer = bufnr,
+        group = group,
+        desc = "Refresh codelens",
+        callback = function()
+          if not client.supports_method("textDocument/codeLens", { bufnr = bufnr }) then
+            vim.api.nvim_clear_autocmds({group = group, buffer = bufnr})
+            return
+          end
+          -- if vim.g.codelens_enabled then vim.lsp.codelens.refresh() end
+          if vim.g.codelens_enabled then vim.lsp.codelens.refresh({bufnr = bufnr}) end
+        end
+      })
+      if vim.g.codelens_enabled then vim.lsp.codelens.refresh({bufnr = bufnr}) end
+      -- lsp_mappings.n["<leader>ll"] = {
+      --   function() vim.lsp.codelens.refresh() end,
+      --   desc = "LSP CodeLens refresh",
+      -- }
+      -- lsp_mappings.n["<leader>lL"] = {
+      --   function() vim.lsp.codelens.run() end,
+      --   desc = "LSP CodeLens run",
+      -- }
+    end
+  },
 }
 
 
@@ -156,6 +198,12 @@ return {
           -- set keybinds
           parse_keymaps(client, default_lsp_keymaps, { buffer = ev.buf, silent = true })
 
+          for k, v in pairs(default_aucmds or {}) do
+            if client.supports_method(k) then
+              v[1](ev.buf, client)
+            end
+          end
+
           -- TODO: Move this out to a generalized config, see:
           -- https://github.com/AstroNvim/astrocommunity/blob/main/lua/astrocommunity/pack/cpp/init.lua
           -- for an example.
@@ -173,7 +221,7 @@ return {
             local group = vim.api.nvim_create_augroup("clangd_no_inlay_hints_in_insert", { clear = true })
 
             wk.add({
-              "<leader>ti",
+              "<leader>li",
               function()
                 if require("clangd_extensions.inlay_hints").toggle_inlay_hints() then
                   vim.api.nvim_create_autocmd("InsertEnter", {
@@ -305,7 +353,7 @@ return {
         max_view_entries = 100,
       }
     })
-    cmp.setup.filetype('gitcommit', {
+    cmp.setup.filetype({ 'gitcommit', 'NeogitCommitMessage' }, {
       sources = cmp.config.sources({
         { name = 'git' },
       }, {
