@@ -40,6 +40,7 @@ flowchart LR
     package --> plugin
     package --> lazy
     package --> abs_config
+    package --> abs_package
     config_ui --> abs_config
     config_ui --> abs_package
 ```
