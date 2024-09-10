@@ -15,8 +15,8 @@ return {
     lint = {
       enable = true
     },
-    scan_cmake_in_package = false, -- it will deeply check the cmake file which found when search cmake packages.
-    semantic_token = false,
+    scan_cmake_in_package = true, -- it will deeply check the cmake file which found when search cmake packages.
+    semantic_token = true,
     -- semantic_token heighlight. if you use treesitter highlight, it is suggested to set with false. it can be used to make better highlight for vscode which only has textmate highlight
   }
 }
