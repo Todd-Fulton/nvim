@@ -11,7 +11,7 @@ return {
         checkThirdParty = false,
         library = {
           -- vim.env.VIMRUNTIME,
-          vim.fn.stdpath("data"),
+          -- vim.fn.stdpath("data"),
           -- Depending on the usage, you might want to add additional paths here.
           -- "${3rd}/luv/library"
           -- "${3rd}/busted/library",

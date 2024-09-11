@@ -14,6 +14,7 @@ opt.softtabstop = 2
 opt.shiftwidth = 2
 opt.breakindent = true
 opt.smartindent = true
+opt.autoindent = true
 opt.virtualedit = "block"
 opt.inccommand = "split"
 opt.backspace = "indent,eol,start"

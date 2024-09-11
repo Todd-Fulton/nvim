@@ -37,12 +37,12 @@ function M.get_plugin(plugin)
 end
 
 function M.is_installed(plugin)
-  return function() return M.get_plugin(plugin) ~= nil end
+  return function () return M.get_plugin(plugin) ~= nil end
 end
 
 function M.exclusive(plugin, ...)
   local nos = { ... }
-  return function()
+  return function ()
     if M.get_plugin(plugin) == nil then return false end
     for _, n in ipairs(nos) do
       if M.get_plugin(n) ~= nil then
@@ -73,9 +73,9 @@ M.mappings = {
   },
   {
     mode = { "n", "v" }, -- NORMAL and VISUAL mode
-    { "<leader>q", "<cmd>confirm q<cr>",    desc = "Quit Window" },
+    { "<leader>q", "<cmd>confirm q<cr>", desc = "Quit Window" },
     { "<leader>Q", "<cmd>confirm qall<cr>", desc = "Exit" },
-    { "<leader>w", "<cmd>w<cr>",            desc = "Write" },
+    { "<leader>w", "<cmd>w<cr>", desc = "Write" },
   },
   {
     mode = { "n", "i" },
@@ -88,49 +88,53 @@ M.mappings = {
   {
     mode = { "n" },
     -- Buffer manipulation
-    { "<Leader>b",  group = "Buffers",             cond = enable_bufkeys },
-    { "<Leader>bb", M.cmd("BufferLinePick"),       desc = "Pick",                       cond = enable_bufkeys },
-    { "<Leader>bn", M.cmd("BufferLineCycleNext"),  desc = "Next",                       cond = enable_bufkeys },
-    { "<Leader>bp", M.cmd("BufferLineCyclePrev"),  desc = "Prev",                       cond = enable_bufkeys },
-    { "<Leader>br", M.cmd("BufferLineCloseRight"), desc = "Close buffers to the Left",  cond = enable_bufkeys },
-    { "<Leader>bl", M.cmd("BufferLineCloseLeft"),  desc = "Close buffers to the Right", cond = enable_bufkeys },
-    { "<C-m>",      M.cmd("BufferLineCycleNext"),  desc = "Next",                       cond = enable_bufkeys },
-    { "<C-n>",      M.cmd("BufferLineCyclePrev"),  desc = "Prev",                       cond = enable_bufkeys },
+    { "<Leader>b", group = "Buffers", cond = enable_bufkeys },
+    { "<Leader>bb", M.cmd("BufferLinePick"), desc = "Pick", cond = enable_bufkeys },
+    { "<Leader>bn", M.cmd("BufferLineCycleNext"), desc = "Next", cond = enable_bufkeys },
+    { "<Leader>bp", M.cmd("BufferLineCyclePrev"), desc = "Prev", cond = enable_bufkeys },
+    { "<Leader>br", M.cmd("BufferLineCloseRight"), desc = "Close buffers to the Left", cond = enable_bufkeys },
+    { "<Leader>bl", M.cmd("BufferLineCloseLeft"), desc = "Close buffers to the Right", cond = enable_bufkeys },
+    { "<C-m>", M.cmd("BufferLineCycleNext"), desc = "Next", cond = enable_bufkeys },
+    { "<C-n>", M.cmd("BufferLineCyclePrev"), desc = "Prev", cond = enable_bufkeys },
     {
       "<Leader>c",
-      function()
+      function ()
         mini_confirm(require("mini.bufremove").delete, 0, false)
       end,
-      desc = "Close buffer"
+      desc = "Close buffer",
     },
 
     -- Splits
-    { "<Leader>s",  group = "Split/Select" },
-    { "<Leader>sv", "<C-w>v",              desc = "Split verticle" },
-    { "<Leader>sh", "<C-w>s",              desc = "Split horizontal" },
-    { "<C-\\>",     "<C-w>v",              desc = "Split verticle" },
-    { "<C-Space>",  "<C-w>s",              desc = "Split horizontal" },
-    { "<Leader>s=", "<C-w>=",              desc = "Make split equal size" },
-    { "<Leader>sx", "<CMD>close<CR>",      desc = "Close split" },
+    { "<Leader>s", group = "Split/Select" },
+    { "<Leader>sv", "<C-w>v", desc = "Split verticle" },
+    { "<Leader>sh", "<C-w>s", desc = "Split horizontal" },
+    { "<C-\\>", "<C-w>v", desc = "Split verticle" },
+    { "<C-Space>", "<C-w>s", desc = "Split horizontal" },
+    { "<Leader>s=", "<C-w>=", desc = "Make split equal size" },
+    { "<Leader>sx", "<CMD>close<CR>", desc = "Close split" },
+    { "<C-h>", "<C-w>h", desc = "Move to left split" },
+    { "<C-j>", "<C-w>j", desc = "Move to split above" },
+    { "<C-k>", "<C-w>k", desc = "Move to split below" },
+    { "<C-l>", "<C-w>l", desc = "Move to right split" },
 
     -- Toggles
-    { "<Leader>t",  group = "Toggle" },
+    { "<Leader>t", group = "Toggle" },
     {
       "<Leader>th",
-      function()
+      function ()
         vim.v.hlsearch = vim.v.hlsearch == 0 and 1 or 0
       end,
-      desc = "Toggle search highlights"
+      desc = "Toggle search highlights",
     },
 
     -- Git
-    { "<Leader>g",  group = "Git" },
-    { "<Leader>gv", M.cmd("Fugit2"),      desc = "Open Fugit2",     cond = enable_fugit2 },
-    { "<Leader>gd", M.cmd("Fugit2Diff"),  desc = "Open diff view",  cond = enable_fugit2 },
+    { "<Leader>g", group = "Git" },
+    { "<Leader>gv", M.cmd("Fugit2"), desc = "Open Fugit2", cond = enable_fugit2 },
+    { "<Leader>gd", M.cmd("Fugit2Diff"), desc = "Open diff view", cond = enable_fugit2 },
     { "<Leader>gb", M.cmd("Fugit2Blame"), desc = "Open blame view", cond = enable_fugit2 },
     { "<Leader>gg", M.cmd("Fugit2Graph"), desc = "Open graph view", cond = enable_fugit2 },
 
-    { "<Leader>gv", M.cmd("Neogit"),      desc = "Open Neogit",     cond = enable_neogit },
+    { "<Leader>gv", M.cmd("Neogit"), desc = "Open Neogit", cond = enable_neogit },
   },
 }
 

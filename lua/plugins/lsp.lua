@@ -5,7 +5,7 @@
 ---@field group string
 
 
-local has_trouble = require 'config.keymaps'.is_installed("trouble.nvim")
+local has_trouble = require "config.keymaps".is_installed("trouble.nvim")
 
 
 local function activate_codelens()
@@ -17,7 +17,7 @@ local function activate_codelens()
     desc = "Refresh codelens",
     callback = function()
       vim.lsp.codelens.refresh({ bufnr = bufnr })
-    end
+    end,
   })
   vim.lsp.codelens.refresh({ bufnr = bufnr })
   vim.keymap.set({ "n" },
@@ -40,33 +40,33 @@ local default_lsp_keymaps = {
   ["textDocument/references"] = {
     "<Leader>lsr",
     "<cmd>Telescope lsp_references<cr>",
-    desc = "References"
+    desc = "References",
   },
   ["textDocument/declaration"] = {
     "<Leader>lsd",
     vim.lsp.buf.declaration,
-    desc = "Go to declaration"
+    desc = "Go to declaration",
   },
   ["textDocument/definition"] = {
     "<Leader>lsD",
     "<cmd>Telescope lsp_definitions<cr>",
-    desc = "Definitions"
+    desc = "Definitions",
   },
   ["textDocument/implementation"] = {
     "<Leader>lsi",
     "<cmd>Telescope lsp_implementations<cr>",
-    desc = "Implementation"
+    desc = "Implementation",
   },
   ["textDocument/typeDefinitions"] = {
     "<Leader>lst",
     "<cmd>Telescope lsp_type_definitions<cr>",
-    desc = "Type definitions"
+    desc = "Type definitions",
   },
   ["textDocument/codeAction"] = {
-    "<Leader>la", vim.lsp.buf.code_action, desc = "Code actions"
+    "<Leader>la", vim.lsp.buf.code_action, desc = "Code actions",
   },
   ["textDocument/rename"] = {
-    "<Leader>lr", vim.lsp.buf.rename, desc = "Smart rename"
+    "<Leader>lr", vim.lsp.buf.rename, desc = "Smart rename",
   },
   ["textDocument/hover"] = { "K", vim.lsp.buf.hover, desc = "Show documentation" },
   ["textDocument/format"] = { "<Leader>lf", vim.lsp.buf.format, desc = "Format document" },
@@ -75,7 +75,7 @@ local default_lsp_keymaps = {
     {
       "<Leader>ldb",
       "<cmd>Telescope diagnostics bufnr=0<cr>",
-      desc = "Buffer diagnostics"
+      desc = "Buffer diagnostics",
     },
     { "<Leader>ldl", vim.diagnostic.open_float, desc = "Line diagnostics" },
     { "<Leader>ldn", vim.diagnostic.goto_next,  desc = "Next" },
@@ -87,13 +87,13 @@ local default_lsp_keymaps = {
       "<leader>lxw",
       "<cmd>Trouble diagnostics toggle<CR>",
       cond = has_trouble,
-      desc = "Open trouble workspace diagnostics"
+      desc = "Open trouble workspace diagnostics",
     },
     {
       "<leader>lxd",
       "<cmd>Trouble diagnostics toggle filter.buf=0<CR>",
       cond = has_trouble,
-      desc = "Open trouble document diagnostics"
+      desc = "Open trouble document diagnostics",
     },
     { "<leader>lxq", "<cmd>Trouble quickfix toggle<CR>", cond = has_trouble, desc = "Open trouble quickfix list" },
     { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>",  cond = has_trouble, desc = "Open trouble location list" },
@@ -111,7 +111,7 @@ local default_lsp_keymaps = {
             deactivate_codelens()
           end
         end,
-        desc = "Toggle codelens"
+        desc = "Toggle codelens",
       },
     },
   },
@@ -123,7 +123,7 @@ local default_aucmds = {
       if vim.g.codelens_enabled then
         activate_codelens()
       end
-    end
+    end,
   },
 }
 
@@ -140,10 +140,10 @@ end
 --- such as client id, buf number, opts, etc...
 --- NOTE: From what context will we derive these arguments?
 local function parse_keymaps(client, mappings, opts)
-  local wk = require 'which-key'
+  local wk = require "which-key"
   local function loop(map)
     if is_keybinding(map) then
-      wk.add(vim.tbl_extend('keep', map, opts))
+      wk.add(vim.tbl_extend("keep", map, opts))
     else
       for k, v in pairs(map) do
         if is_lsp_method(k) then
@@ -185,7 +185,7 @@ return {
           vim.lsp.with(
             vim.lsp.handlers.hover,
             {
-              border = "single"
+              border = "single",
             }
           )
 
@@ -193,7 +193,7 @@ return {
           vim.lsp.with(
             vim.lsp.handlers.signature_help,
             {
-              border = "single"
+              border = "single",
             }
           )
 
@@ -226,7 +226,7 @@ return {
               "<CMD>ClangdSwitchSourceHeader<CR>",
               desc = "switch source/header file",
               buffer = ev.buf,
-              silent = true
+              silent = true,
             })
 
             local group = vim.api.nvim_create_augroup("clangd_no_inlay_hints_in_insert", { clear = true })
@@ -238,12 +238,12 @@ return {
                   vim.api.nvim_create_autocmd("InsertEnter", {
                     group = group,
                     buffer = ev.buf,
-                    callback = require("clangd_extensions.inlay_hints").disable_inlay_hints
+                    callback = require("clangd_extensions.inlay_hints").disable_inlay_hints,
                   })
                   vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
                     group = group,
                     buffer = ev.buf,
-                    callback = require("clangd_extensions.inlay_hints").set_inlay_hints
+                    callback = require("clangd_extensions.inlay_hints").set_inlay_hints,
                   })
                 else
                   vim.api.nvim_clear_autocmds({ group = group, buffer = ev.buf })
@@ -251,7 +251,7 @@ return {
               end,
               buffer = ev.buf,
               silent = true,
-              desc = "Toggle inlay hints"
+              desc = "Toggle inlay hints",
             })
           end
         end,
@@ -271,7 +271,7 @@ return {
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
       -- Setup bordered ui
-      require('lspconfig.ui.windows').default_options.border = 'single'
+      require("lspconfig.ui.windows").default_options.border = "single"
 
       -- used to enable autocompletion (assign to every lsp server config)
       local cmp_capabilities = cmp_nvim_lsp.default_capabilities(
@@ -279,15 +279,15 @@ return {
       )
 
       -- Load top level configs for modularity
-      local configs = require 'config.lsp'
+      local configs = require "config.lsp"
 
       -- Add cmp default_capabilities to each config, and call setup
       for server, config in pairs(configs) do
         -- FIXME: use pcall to check if this works.
-        local default_config = require('lspconfig.server_configurations.' .. server).default_config
+        local default_config = require("lspconfig.server_configurations." .. server).default_config
         -- use override default config with user config
-        config = vim.tbl_deep_extend('keep', config, default_config)
-        config = vim.tbl_deep_extend('keep', config,
+        config = vim.tbl_deep_extend("keep", config, default_config)
+        config = vim.tbl_deep_extend("keep", config,
           {
             capabilities = cmp_capabilities,
           })
@@ -303,13 +303,25 @@ return {
     "onsails/lspkind.nvim", -- pictograms in completion
     "petertriho/cmp-git",
     "p00f/clangd_extensions.nvim",
+    "L3MON4D3/LuaSnip",
+    "saadparwaiz1/cmp_luasnip",     -- for autocompletion
+    "rafamadriz/friendly-snippets", -- useful snippets
   },
   config = function()
-    local cmp = require 'cmp'
-    local lspkind = require 'lspkind'
+    local cmp = require "cmp"
+    local luasnip = require("luasnip")
+    local lspkind = require("lspkind")
+
+    require("luasnip.loaders.from_vscode").lazy_load()
+
     cmp.setup({
       completion = {
         completeopt = "menu,menuone,preview,noselect",
+      },
+      snippet = {
+        expand = function(args)
+          luasnip.lsp_expand(args.body)
+        end,
       },
       window = {
         completion = cmp.config.window.bordered(),
@@ -330,10 +342,10 @@ return {
       -- sources for autocompletion
       sources = cmp.config.sources {
         { name = "nvim_lsp" },
-        -- TODO: Install LuaSnip
-        -- { name = "luasnip" },
+        { name = "luasnip" },
         { name = "path" },
         { name = "buffer",  keyword_length = 4, max_item_count = 5 },
+        { name = "git" },
       },
       -- configure lspkind
       ---@diagnostic disable-next-line: missing-fields
@@ -362,16 +374,10 @@ return {
       ---@diagnostic disable-next-line: missing-fields
       performance = {
         max_view_entries = 100,
-      }
+      },
     })
-    cmp.setup.filetype({ 'gitcommit', 'NeogitCommitMessage' }, {
-      sources = cmp.config.sources({
-        { name = 'git' },
-      }, {
-        { name = 'buffer' },
-      })
-    })
-    require("cmp_git").setup()
+
+    require("cmp_git").setup({})
   end,
-}
+},
 }

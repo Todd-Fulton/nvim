@@ -11,7 +11,7 @@ return {
       {"<leader>Ss", "<cmd>SessionSave<CR>", desc = "Save session for cwd" },
     })
   end,
-  config = function(plugin, opts)
+  config = function(_, opts)
     local auto_session = require("auto-session")
     opts = opts and opts or {}
 
