@@ -7,6 +7,33 @@
 
 local has_trouble = require 'config.keymaps'.is_installed("trouble.nvim")
 
+
+local function activate_codelens()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local group = vim.api.nvim_create_augroup("lsp_codelens", { clear = true })
+  vim.api.nvim_create_autocmd({ "BufEnter", "InsertLeave" }, {
+    buffer = bufnr,
+    group = group,
+    desc = "Refresh codelens",
+    callback = function()
+      vim.lsp.codelens.refresh({ bufnr = bufnr })
+    end
+  })
+  vim.lsp.codelens.refresh({ bufnr = bufnr })
+  vim.keymap.set({ "n" },
+    "<leader>llr", function() vim.lsp.codelens.refresh { bufnr = bufnr } end,
+    { desc = "Refresh codelens", buffer = bufnr })
+  vim.keymap.set({ "n" }, "<leader>llR", vim.lsp.codelens.run, { desc = "Run codelens", buffer = bufnr })
+end
+
+local function deactivate_codelens()
+  local bufnr = vim.api.nvim_get_current_buf()
+  vim.keymap.del({ "n" }, "<leader>llr", { buffer = bufnr })
+  vim.keymap.del({ "n" }, "<leader>llR", { buffer = bufnr })
+  vim.api.nvim_clear_autocmds({ group = "lsp_codelens", buffer = bufnr })
+  vim.lsp.codelens.clear(nil, bufnr)
+end
+
 local default_lsp_keymaps = {
   { "<Leader>l",  group = "Lsp" },
   { "<Leader>ls", group = "Search" },
@@ -78,6 +105,11 @@ local default_lsp_keymaps = {
         "<Leader>llt",
         function()
           vim.g.codelens_enabled = not vim.g.codelens_enabled
+          if vim.g.codelens_enabled then
+            activate_codelens()
+          else
+            deactivate_codelens()
+          end
         end,
         desc = "Toggle codelens"
       },
@@ -87,31 +119,10 @@ local default_lsp_keymaps = {
 
 local default_aucmds = {
   ["textDocument/codeLens"] = {
-    function (bufnr, client)
-      local group = vim.api.nvim_create_augroup("lsp_codelens_refresh", {clear = true})
-
-      vim.api.nvim_create_autocmd({"BufEnter", "InsertLeave"}, {
-        buffer = bufnr,
-        group = group,
-        desc = "Refresh codelens",
-        callback = function()
-          if not client.supports_method("textDocument/codeLens", { bufnr = bufnr }) then
-            vim.api.nvim_clear_autocmds({group = group, buffer = bufnr})
-            return
-          end
-          -- if vim.g.codelens_enabled then vim.lsp.codelens.refresh() end
-          if vim.g.codelens_enabled then vim.lsp.codelens.refresh({bufnr = bufnr}) end
-        end
-      })
-      if vim.g.codelens_enabled then vim.lsp.codelens.refresh({bufnr = bufnr}) end
-      -- lsp_mappings.n["<leader>ll"] = {
-      --   function() vim.lsp.codelens.refresh() end,
-      --   desc = "LSP CodeLens refresh",
-      -- }
-      -- lsp_mappings.n["<leader>lL"] = {
-      --   function() vim.lsp.codelens.run() end,
-      --   desc = "LSP CodeLens run",
-      -- }
+    function()
+      if vim.g.codelens_enabled then
+        activate_codelens()
+      end
     end
   },
 }
@@ -200,7 +211,7 @@ return {
 
           for k, v in pairs(default_aucmds or {}) do
             if client.supports_method(k) then
-              v[1](ev.buf, client)
+              v[1]()
             end
           end
 
