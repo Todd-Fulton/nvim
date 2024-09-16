@@ -5,5 +5,6 @@ return {
   },
   --TODO: also when we open a new tab
   cmd = {"ScopeLoadState", "ScopeSaveState"},
+  keys = {{"<Leader>ta", nil}},
   opts = {},
 }

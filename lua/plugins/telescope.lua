@@ -3,6 +3,7 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
+    "tiagovla/scope.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
   },
   lazy = true,
@@ -41,6 +42,7 @@ return {
     })
 
     telescope.setup(opts)
+    telescope.load_extension("scope")
     telescope.load_extension("fzf")
   end,
 }

@@ -2,6 +2,7 @@ return {
   "nanozuki/tabby.nvim",
   -- event = 'VimEnter', -- if you want lazy load, see below
   dependencies = "nvim-tree/nvim-web-devicons",
+  keys = {{"<leader>ta", nil, desc = "New tab", { silent = true}}},
   config = function ()
     vim.o.showtabline = 2
     vim.opt.sessionoptions = "buffers,curdir,folds,globals,help,tabpages,terminal,winsize"
@@ -54,16 +55,15 @@ return {
       end,
       -- option = {}, -- setup modules' option,
     })
-    vim.api.nvim_set_keymap("n", "<leader>ta", ":$tabnew<CR>", { silent = true })
-    vim.api.nvim_set_keymap("n", "<leader>tc", ":tabclose<CR>", { silent = true })
-    vim.api.nvim_set_keymap("n", "<leader>to", ":tabonly<CR>", { silent = true })
-    vim.api.nvim_set_keymap("n", "<leader>tn", ":tabn<CR>", { silent = true })
-    vim.api.nvim_set_keymap("n", "<leader>tp", ":tabp<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>ta", ":$tabnew<CR>", { silent = true, desc = "New tab" })
+    vim.api.nvim_set_keymap("n", "<leader>tc", ":tabclose<CR>", { silent = true, desc = "Close tab" })
+    vim.api.nvim_set_keymap("n", "<leader>to", ":tabonly<CR>", { silent = true, desc = "Collapse tabs" })
+    vim.api.nvim_set_keymap("n", "<leader>tn", ":tabn<CR>", { silent = true , desc = "Next tab" })
+    vim.api.nvim_set_keymap("n", "<leader>tp", ":tabp<CR>", { silent = true , desc = "Prev tab" })
 
-    vim.api.nvim_set_keymap("n", "<leader>tp", ":tabp<CR>", { silent = true })
     -- move current tab to previous position
-    vim.api.nvim_set_keymap("n", "<leader>tmp", ":-tabmove<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>tmp", ":-tabmove<CR>", { silent = true, desc = "Move tab (prev)" })
     -- move current tab to next position
-    vim.api.nvim_set_keymap("n", "<leader>tmn", ":+tabmove<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>tmn", ":+tabmove<CR>", { silent = true, desc = "Move tab (next)" })
   end,
 }
