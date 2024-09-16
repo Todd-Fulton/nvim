@@ -4,7 +4,7 @@ return {
   dependencies = { "nvim-lua/plenary.nvim" },
   cmd = "TodoTelescope",
   init = function()
-    require'config.keymaps'.add({
+    require'user.configs.keymaps.init'.add({
       mode = { "n" },
       { 
         "]t",

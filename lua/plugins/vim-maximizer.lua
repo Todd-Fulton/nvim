@@ -2,7 +2,7 @@ return {
   "szw/vim-maximizer",
   cmd = "MaximizerToggle",
   init = function()
-    require'config.keymaps'.add({
+    require'user.configs.keymaps.init'.add({
       "<Leader>sm",
       "<CMD>MaximizerToggle<CR>",
       mode = "n",

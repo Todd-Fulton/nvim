@@ -38,6 +38,7 @@ opt.backup = false
 opt.writebackup = false
 opt.swapfile = false
 opt.undofile = true -- yes, we want history, but not swap files
+vim.o.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,help,localoptions,terminal"
 
 -- general file stuffs
 opt.fileencoding = "utf-8"
@@ -86,3 +87,37 @@ vim.cmd "digraphs sw 120012" -- 𝓌
 vim.cmd "digraphs sx 120013" -- 𝓍
 vim.cmd "digraphs sy 120014" -- 𝓎
 vim.cmd "digraphs sz 120015" -- 𝓏
+
+-- When opening a terminal
+-- Disable number, relativenumber signcolmn,
+-- Enable line wrap
+vim.api.nvim_create_autocmd("TermOpen", {
+  callback = function (_)
+    vim.api.nvim_set_option_value("number", false, {
+      scope = "local",
+    })
+    vim.api.nvim_set_option_value("relativenumber", false, {
+      scope = "local",
+    })
+    vim.api.nvim_set_option_value("signcolumn", nil, {
+      scope = "local",
+    })
+    vim.api.nvim_set_option_value("wrap", true, {
+      scope = "local",
+    })
+  end
+})
+
+-- For C++ files, set indent width to 4
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "c", "cpp" },
+  callback = function ()
+    vim.api.nvim_set_option_value("shiftwidth", 4, {
+      scope = "local",
+    })
+    vim.api.nvim_set_option_value("tabstop", 4, {
+      scope = "local",
+    })
+  end
+})
+

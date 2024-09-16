@@ -20,7 +20,7 @@ return {
   },
   config = function()
     local wk = require'which-key'
-    local keymaps = require'config.keymaps'
+    local keymaps = require'user.configs.keymaps.init'
     wk.add(keymaps.mappings)
     keymaps.mappings = {}
   end,

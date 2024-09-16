@@ -6,26 +6,6 @@ if not (vim.env.LAZY or (vim.uv or vim.loop).fs_stat(lazypath)) then
   vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
 
---[[ local function is_win()
-  return package.config:sub(1, 1) == '\\'
-end
-
-local function get_path_separator()
-  if is_win() then
-    return '\\'
-  end
-  return '/'
-end
-
-
-local function script_path()
-  local str = debug.getinfo(2, 'S').source:sub(2)
-  if is_win() then
-    str = str:gsub('/', '\\')
-  end
-  return str:match('(.*' .. get_path_separator() .. ')')
-end ]]
-
 -- vim.opt.rtp:prepend(script_path())
 vim.opt.rtp:prepend(lazypath)
 
@@ -38,5 +18,32 @@ if not pcall(require, "lazy") then
 end
 
 
-require "vim-opts"
-require "lazy_setup"
+require "user.vim-opts"
+require("lazy").setup(
+{
+    { import = "plugins" },
+},
+{
+  ui = { backdrop = 100 },
+  change_detection = {
+    notify = false
+  },
+  install = {
+    missing = true,
+    colorscheme = { "tokyonight-night" },
+  },
+  checker = { enabled = true, notify = false },
+  performance = {
+    rtp = {
+      -- disable some rtp plugins, add more to your liking
+      disabled_plugins = {
+        "gzip",
+        "netrwPlugin",
+        "tarPlugin",
+        "tohtml",
+        "zipPlugin",
+      },
+    },
+  },
+} --[[@as LazyConfig]]
+)

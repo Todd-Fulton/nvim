@@ -10,7 +10,7 @@ return {
       workspace = {
         checkThirdParty = false,
         library = {
-          -- vim.env.VIMRUNTIME,
+          vim.env.VIMRUNTIME,
           -- vim.fn.stdpath("data"),
           -- Depending on the usage, you might want to add additional paths here.
           -- "${3rd}/luv/library"
@@ -27,8 +27,18 @@ return {
       },
       completion = {
         callSnippet = "Replace",
+        autoRequire = true,
       },
       codeLens = {
+        enable = true,
+      },
+      hint = {
+        arrayIndex = "Auto",
+        await = true,
+        enable = true,
+        setType = true,
+      },
+      hover = {
         enable = true,
       },
     },

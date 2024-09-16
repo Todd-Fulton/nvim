@@ -10,16 +10,17 @@ return {
       parser_config.asm = {
         install_info = {
           url = "~/projects/tree-sitter-asm", -- local path or git repo
-          files = { "src/parser.c" }, -- note that some parsers also require src/scanner.c or src/scanner.cc
+          files = { "src/parser.c" },         -- note that some parsers also require src/scanner.c or src/scanner.cc
           -- optional entries:
-          branch = "work", -- default branch in case of git repo if different from master
+          branch = "work",                    -- default branch in case of git repo if different from master
           -- generate_requires_npm = false, -- if stand-alone parser without npm dependencies
           -- requires_generate_from_grammar = false, -- if folder contains pre-generated src/parser.c
           revision = "b016cfba7387b1c605862124295f2b072dcc8c67",
         },
       }
-      require"nvim-treesitter.configs".setup {
-        ensure_installed =  {
+      ---@diagnostic disable-next-line: missing-fields
+      require "nvim-treesitter.configs".setup {
+        ensure_installed = {
           "asm",
           "bash",
           "c",
@@ -37,7 +38,7 @@ return {
           enable = true,
           additional_vim_regex_highlighting = false,
         },
-        incremental_selection =  {
+        incremental_selection = {
           enable = true,
           keymaps = {
             init_selection = "<Leader>si",
@@ -46,7 +47,10 @@ return {
             scope_incremental = "<Leader>sc",
           },
         },
-        indent = { enable = true },
+        indent = {
+          enable = true,
+          disable = { "lua", },
+        },
         textobjects = {
           swap = {
             enable = true,
@@ -83,7 +87,7 @@ return {
             -- mapping query_strings to modes.
             selection_modes = {
               ['@parameter.outer'] = 'v', -- charwise
-              ['@function.outer'] = 'v', -- linewise
+              ['@function.outer'] = 'v',  -- linewise
               ['@class.outer'] = '<c-v>', -- blockwise
             },
             -- If you set this to `true` (default is `false`) then any textobject is

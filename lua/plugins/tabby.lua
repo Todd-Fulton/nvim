@@ -4,7 +4,7 @@ return {
   dependencies = "nvim-tree/nvim-web-devicons",
   config = function ()
     vim.o.showtabline = 2
-    vim.opt.sessionoptions = "curdir,folds,globals,help,tabpages,terminal,winsize"
+    vim.opt.sessionoptions = "buffers,curdir,folds,globals,help,tabpages,terminal,winsize"
     local theme = {
       fill = "TabLineFill",
       -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }
@@ -27,7 +27,7 @@ return {
               line.sep("", hl, theme.fill),
               tab.is_current() and "" or "󰆣",
               tab.number(),
-              tab.name(),
+              -- tab.name(),
               tab.close_btn(""),
               line.sep("", hl, theme.fill),
               hl = hl,
@@ -54,14 +54,16 @@ return {
       end,
       -- option = {}, -- setup modules' option,
     })
-    vim.api.nvim_set_keymap("n", "<leader>ta", ":$tabnew<CR>", { noremap = true })
-    vim.api.nvim_set_keymap("n", "<leader>tc", ":tabclose<CR>", { noremap = true })
-    vim.api.nvim_set_keymap("n", "<leader>to", ":tabonly<CR>", { noremap = true })
-    vim.api.nvim_set_keymap("n", "<leader>tn", ":tabn<CR>", { noremap = true })
-    vim.api.nvim_set_keymap("n", "<leader>tp", ":tabp<CR>", { noremap = true })
+    vim.api.nvim_set_keymap("n", "<leader>ta", ":$tabnew<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>tc", ":tabclose<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>to", ":tabonly<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>tn", ":tabn<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<leader>tp", ":tabp<CR>", { silent = true })
+
+    vim.api.nvim_set_keymap("n", "<leader>tp", ":tabp<CR>", { silent = true })
     -- move current tab to previous position
-    vim.api.nvim_set_keymap("n", "<leader>tmp", ":-tabmove<CR>", { noremap = true })
+    vim.api.nvim_set_keymap("n", "<leader>tmp", ":-tabmove<CR>", { silent = true })
     -- move current tab to next position
-    vim.api.nvim_set_keymap("n", "<leader>tmn", ":+tabmove<CR>", { noremap = true })
+    vim.api.nvim_set_keymap("n", "<leader>tmn", ":+tabmove<CR>", { silent = true })
   end,
 }

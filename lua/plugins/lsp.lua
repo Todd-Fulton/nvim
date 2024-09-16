@@ -5,8 +5,17 @@
 ---@field group string
 
 
-local has_trouble = require "config.keymaps".is_installed("trouble.nvim")
+local has_trouble = require "user.configs.keymaps".is_installed("trouble.nvim")
 
+-- local lsp_methods = {
+--   "workspace/applyEdit",
+--   "workspace/configuration",
+--   "workspace/workspaceFolders",
+--   "typeHierarchy/supertypes",
+--   "typeHierarchy/subtypes",
+--   "textDocument/implementation",
+--   "callHierarchy/outgoingCalls",
+--   "callHierarchy/incomingCalls",
 
 local function activate_codelens()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -98,20 +107,98 @@ local default_lsp_keymaps = {
     { "<leader>lxq", "<cmd>Trouble quickfix toggle<CR>", cond = has_trouble, desc = "Open trouble quickfix list" },
     { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>",  cond = has_trouble, desc = "Open trouble location list" },
     { "<leader>lxt", "<cmd>Trouble todo toggle<CR>",     cond = has_trouble, desc = "Open todos in trouble" },
+  },
 
-    ["textDocument/codeLens"] = {
-      { "<Leader>ll", group = "Codelens" },
+  ["textDocument/codeLens"] = {
+    { "<Leader>ll", group = "Codelens" },
+    {
+      "<Leader>llt",
+      function()
+        vim.g.codelens_enabled = not vim.g.codelens_enabled
+        if vim.g.codelens_enabled then
+          activate_codelens()
+        else
+          deactivate_codelens()
+        end
+      end,
+      desc = "Toggle codelens",
+    },
+  },
+
+  ["textDocument/inlayHint"] = {
+    {
+      "<Leader>li",
+      function()
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+      end,
+      desc = "Toggle inlay hint",
+    },
+  },
+
+  ["textDocument/documentSymbol"] = {
+    {
+      "<Leader>lss",
+      function()
+        require("telescope.builtin").lsp_document_symbols({
+          symbols = {
+            "class",
+            "function",
+            "file",
+            "module",
+            "method",
+            "property",
+            "constructor",
+            "enum",
+            "interface",
+            "struct",
+            "variable",
+          }
+        })
+      end,
+      desc = "Document symbols (Telescope)"
+    }
+  },
+
+  ["workspace/symbol"] = {
+    {
+      "<Leader>lsw",
+      function()
+        require("telescope.builtin").lsp_workspace_symbols({
+          symbols = {
+            "class",
+            "function",
+            "file",
+            "module",
+            "method",
+            "enum",
+            "interface",
+            "struct",
+            "variable",
+          }
+        })
+      end,
+      desc = "Workspace symbols (Telescope)"
+    },
+
+    ["workspace/symbol"] = {
       {
-        "<Leader>llt",
+        "<Leader>lsS",
         function()
-          vim.g.codelens_enabled = not vim.g.codelens_enabled
-          if vim.g.codelens_enabled then
-            activate_codelens()
-          else
-            deactivate_codelens()
-          end
+          require("telescope.builtin").lsp_dynamic_workspace_symbols({
+            symbols = {
+              "class",
+              "function",
+              "file",
+              "module",
+              "method",
+              "enum",
+              "interface",
+              "struct",
+              "variable",
+            }
+          })
         end,
-        desc = "Toggle codelens",
+        desc = "Workspace symbols (Telescope)"
       },
     },
   },
@@ -168,34 +255,14 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/nvim-cmp",
       { "antosha417/nvim-lsp-file-operations", config = true },
-      { "folke/neodev.nvim",                   opts = {} },
       { "p00f/clangd_extensions.nvim" },
     },
     config = function()
       -- import lspconfig plugin
       local lspconfig = require("lspconfig")
 
-      -- import mason_lspconfig plugin
-      -- local mason_lspconfig = require("mason-lspconfig")
-
       -- import cmp-nvim-lsp plugin
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
-      vim.lsp.handlers["textDocument/hover"] =
-          vim.lsp.with(
-            vim.lsp.handlers.hover,
-            {
-              border = "single",
-            }
-          )
-
-      vim.lsp.handlers["textDocument/signatureHelp"] =
-          vim.lsp.with(
-            vim.lsp.handlers.signature_help,
-            {
-              border = "single",
-            }
-          )
 
       -- setup default configuration, keybindings, etc.
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -263,15 +330,28 @@ return {
       --   callback = on_lsp_detach,
       -- })
 
-      -- Change the Diagnostic symbols in the sign column (gutter)
-      -- (not in youtube nvim video)
-      local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
-      -- Setup bordered ui
-      require("lspconfig.ui.windows").default_options.border = "single"
+      local ds = vim.diagnostic.severity
+      local signs = { [ds.ERROR] = " ", [ds.WARN] = " ", [ds.HINT] = "󰠠 ", [ds.INFO] = " " }
+
+      -- Configure diagnostics
+      vim.diagnostic.config({
+        -- sort by severity
+        severity_sort = true,
+        float = {
+          -- use single line borders
+          border = "rounded",
+        },
+        -- Use icons for signs
+        signs = { text = signs },
+        -- Don't use a prefix, the sign is in the sign column
+        virtual_text = {
+          virt_text_pos = 'eol',
+          prefix = "",
+        }
+      })
+
+      -- Setup bordered ui for LspInfo
+      require("lspconfig.ui.windows").default_options.border = "rounded"
 
       -- used to enable autocompletion (assign to every lsp server config)
       local cmp_capabilities = cmp_nvim_lsp.default_capabilities(
@@ -279,13 +359,14 @@ return {
       )
 
       -- Load top level configs for modularity
-      local configs = require "config.lsp"
+      local user_config = require "user.configs.lsp"
 
       -- Add cmp default_capabilities to each config, and call setup
-      for server, config in pairs(configs) do
+      for server, config in pairs(user_config.configs) do
         -- FIXME: use pcall to check if this works.
         local default_config = require("lspconfig.server_configurations." .. server).default_config
-        -- use override default config with user config
+        default_config.handlers = vim.tbl_deep_extend('keep', default_config.handlers or {}, user_config.handlers)
+        -- override default config with user config
         config = vim.tbl_deep_extend("keep", config, default_config)
         config = vim.tbl_deep_extend("keep", config,
           {
@@ -307,14 +388,15 @@ return {
     "saadparwaiz1/cmp_luasnip",     -- for autocompletion
     "rafamadriz/friendly-snippets", -- useful snippets
   },
-  config = function()
+  config = function(_, opts)
     local cmp = require "cmp"
     local luasnip = require("luasnip")
     local lspkind = require("lspkind")
+    opts = opts or {}
 
     require("luasnip.loaders.from_vscode").lazy_load()
 
-    cmp.setup({
+    cmp.setup(vim.tbl_deep_extend('force', opts, {
       completion = {
         completeopt = "menu,menuone,preview,noselect",
       },
@@ -328,7 +410,9 @@ return {
         documentation = cmp.config.window.bordered(),
       },
       view = {
-        entries = "custom",
+        entries = {
+          name = "custom", -- can be "custom", "wildmenu" or "native"
+        }
       },
       mapping = cmp.mapping.preset.insert({
         ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
@@ -338,6 +422,37 @@ return {
         ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
         ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
         ["<CR>"] = cmp.mapping.confirm({ select = false }),
+        ["<C-m>"] = cmp.mapping(function(fallback)
+          if luasnip.locally_jumpable(1) then
+            luasnip.jump(1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+
+        ["<C-n>"] = cmp.mapping(function(fallback)
+          if luasnip.locally_jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+
+        ["<C-,>"] = cmp.mapping(function(fallback)
+          if luasnip.choice_active() then
+            luasnip.change_choice(1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+
+        ["<C-.>"] = cmp.mapping(function(fallback)
+          if luasnip.choice_active() then
+            luasnip.change_choice(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
       }),
       -- sources for autocompletion
       sources = cmp.config.sources {
@@ -375,9 +490,34 @@ return {
       performance = {
         max_view_entries = 100,
       },
-    })
+    }))
 
     require("cmp_git").setup({})
+    -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline({ '/', '?' }, {
+      view = {
+        entries = {
+          name = "custom", -- can be "custom", "wildmenu" or "native"
+        }
+      },
+      -- mapping = cmp.mapping.preset.cmdline(),
+      sources = {
+        { name = 'buffer' }
+      }
+    })
+
+    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline(':', {
+      sources = cmp.config.sources({
+        { name = 'path' }
+      }, {
+        { name = 'cmdline' }
+      }),
+      ---@diagnostic disable-next-line: missing-fields
+      matching = { disallow_symbol_nonprefix_matching = false }
+    })
+    vim.api.nvim_set_keymap("c", "<C-j>", "<C-n>", {})
+    vim.api.nvim_set_keymap("c", "<C-k>", "<C-p>", {})
   end,
 },
 }

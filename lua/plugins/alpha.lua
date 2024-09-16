@@ -30,8 +30,8 @@ return {
       dashboard.button("SPC fg", "󱩾  > Find word", "<CMD>Telescope live_grep<CR>"),
       dashboard.button("SPC fr", "󰥌  > Find recently opened", "<CMD>Telescope oldfiles<CR>"),
       dashboard.button("SPC Sr", "󰦛  > Restore Session", "<CMD>SessionRestore<CR>"),
-      dashboard.button("h", "󰘥  > Search help", "<CMD>Telescope help_tags<CR>"),
-      dashboard.button("q", "󰈆  > Quit Neovim", "<CMD>qa<CR>"),
+      dashboard.button("SPC fh", "󰘥  > Search help", "<CMD>Telescope help_tags<CR>"),
+      dashboard.button("SPC q", "󰈆  > Quit Neovim", "<CMD>qa<CR>"),
     }
 
     dashboard.config.opts.noautocmd = true

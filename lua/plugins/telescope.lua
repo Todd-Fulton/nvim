@@ -9,7 +9,7 @@ return {
   cmd = { "Telescope", "TodoTelescope" },
   init = function()
         -- Setup mappings
-    require'config.keymaps'.add({
+    require'user.configs.keymaps.init'.add({
       mode = { "n" },
       { "<Leader>f", group="Find" },
       { "<Leader>ff", function() return require("telescope.builtin").find_files() end, desc="Find Files" },
