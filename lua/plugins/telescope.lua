@@ -4,7 +4,8 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
     "tiagovla/scope.nvim",
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    'nvim-telescope/telescope-symbols.nvim',
   },
   lazy = true,
   cmd = { "Telescope", "TodoTelescope" },
@@ -26,7 +27,7 @@ return {
     opts = opts and opts or {}
     local telescope = require("telescope")
     local actions = require("telescope.actions")
-    local action_layout = require("telescope.actions.layout")
+    -- local action_layout = require("telescope.actions.layout")
 
     opts = vim.tbl_deep_extend('force', opts, {
       defaults = {
