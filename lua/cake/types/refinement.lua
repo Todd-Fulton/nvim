@@ -31,13 +31,13 @@ end
 local refm_vtable = {
   __newindex = function(t, k, v)
     if k == "value" then
-      if not t[_refinement]:check(v) then
+      if not t[_refinement]:run_checks(v) then
         t[_refinement]:error(v)
       end
       rawset(t, _value, v)
     else
       t[_value][k] = v
-      if not t[_refinement]:check(t[_value]) then
+      if not t[_refinement]:run_checks(t[_value]) then
         t[_refinement]:error(t[_value])
       end
     end
@@ -143,7 +143,7 @@ end
 ---@class DefaultRefinement : Class
 ---@field check fun(self, v : `T`) : boolean
 local DefaultRefinement = {}
-DefaultRefinement.__index = M.DefaultRefinement
+DefaultRefinement.__index = DefaultRefinement
 
 ---@param self DefaultRefinement
 ---@param v `T`
@@ -153,8 +153,8 @@ end
 
 ---@private
 function DefaultRefinement:run_checks(v)
-  if self.__index ~= self then
-    return self.__index:run_checks(v) and self:check(v)
+  if getmetatable(self) ~= self then
+    return getmetatable(self):run_checks(v) and self:check(v)
   else
     return self:check(v)
   end
@@ -187,10 +187,12 @@ end
 ---@class table : {check : ( fun(self, v : `T`) : boolean ), [any]: any}
 ---@return `R`
 function DefaultRefinement:extend(cls)
-  cls.__index = self
-  setmetatable(cls, cls)
+  cls.__index = cls
+  setmetatable(cls, self)
   return cls
 end
+
+setmetatable(DefaultRefinement, DefaultRefinement)
 
 ---@param self Refinement<`R`, `T`>
 ---@param class `T`|string
@@ -199,12 +201,12 @@ end
 function M.Refinement:__call(class, impl)
   ---@class impl `R`
   impl = impl or {}
-  impl.__index = M.DefaultRefinement
   impl.vtable = get_refine_vtable(class)
 
-  setmetatable(impl, impl)
-  return impl
+  return setmetatable(impl, DefaultRefinement)
 end
+
+setmetatable(M.Refinement, M.Refinement)
 
 local OnUpdate = {}
 OnUpdate.__index = OnUpdate
@@ -269,11 +271,9 @@ local Boolean = M.Refinement("boolean",
   }
 )
 
-local NotifyingNumber = OnUpdate:wrap(Number)
-
 local a = Number(1)
 local b = Number(2)
-local c = NotifyingNumber(a + b)
+local c = Number(a + b)
 local t = Boolean(c > a)
 
 vim.print(a.value)
