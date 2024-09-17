@@ -36,16 +36,20 @@ return {
             }
           end),
           line.spacer(),
-          line.wins_in_tab(line.api.get_current_tab()).foreach(function (win)
-            return {
+          (function()
+            local bufs = {}
+            for _, buf in ipairs(require('scope.utils').get_valid_buffers()) do
+              bufs[#bufs+1] = {
               line.sep("", theme.win, theme.fill),
-              win.is_current() and "" or "",
-              win.buf_name(),
+              buf == vim.api.nvim_get_current_buf() and "" or "",
+              vim.api.nvim_buf_get_name(buf):match("^.+/(.+)$"),
               line.sep("", theme.win, theme.fill),
               hl = theme.win,
               margin = " ",
             }
-          end),
+            end
+            return bufs
+          end)(),
           {
             line.sep("", theme.tail, theme.fill),
             { "  ", hl = theme.tail },

@@ -96,14 +96,16 @@ M.mappings = {
   {
     mode = { "n" },
     -- Buffer manipulation
-    { "<Leader>b",  group = "Buffers",             cond = enable_bufkeys },
-    { "<Leader>bb", M.cmd("BufferLinePick"),       desc = "Pick",                       cond = enable_bufkeys },
-    { "<Leader>bn", M.cmd("BufferLineCycleNext"),  desc = "Next",                       cond = enable_bufkeys },
-    { "<Leader>bp", M.cmd("BufferLineCyclePrev"),  desc = "Prev",                       cond = enable_bufkeys },
-    { "<Leader>br", M.cmd("BufferLineCloseRight"), desc = "Close buffers to the Left",  cond = enable_bufkeys },
-    { "<Leader>bl", M.cmd("BufferLineCloseLeft"),  desc = "Close buffers to the Right", cond = enable_bufkeys },
-    { "<C-m>",      M.cmd("BufferLineCycleNext"),  desc = "Next",                       cond = enable_bufkeys },
-    { "<C-n>",      M.cmd("BufferLineCyclePrev"),  desc = "Prev",                       cond = enable_bufkeys },
+    { "<Leader>b",  group = "Buffers" },
+    -- { "<Leader>bb", M.cmd("BufferLinePick"),       desc = "Pick" },
+    { "<Leader>bn", ":bn<CR>",        desc = "Next",         silent = true },
+    { "<Leader>bp", ":bp<CR>",        desc = "Prev",         silent = true },
+    { "]b",         ":bn<CR>",        desc = "Next buffer",  silent = true },
+    { "[b",         ":bp<CR>",        desc = "Prev buffer",  silent = true },
+    -- { "<Leader>br", M.cmd("BufferLineCloseRight"), desc = "Close buffers to the Left" },
+    -- { "<Leader>bl", M.cmd("BufferLineCloseLeft"),  desc = "Close buffers to the Right" },
+    -- { "<C-m>",      M.cmd("BufferLineCycleNext"),  desc = "Next" },
+    -- { "<C-n>",      M.cmd("BufferLineCyclePrev"),  desc = "Prev" },
     {
       "<Leader>c",
       function()
@@ -144,12 +146,12 @@ M.mappings = {
   },
   {
     mode = { "t", "n" },
-    { "<C-h>", "<CMD>wincmd h<CR>", desc = "Move to left split", },
-    { "<C-j>", "<CMD>wincmd j<CR>", desc = "Move to split above", },
-    { "<C-k>", "<CMD>wincmd k<CR>", desc = "Move to split below", },
-    { "<C-l>", "<CMD>wincmd l<CR>", desc = "Move to right split", },
-    { "<M-]>", "<C-\\><C-n><CMD>tabn<CR>",         desc = "Tab next",            silent = true },
-    { "<M-[>", "<C-\\><C-n><CMD>tabp<CR>",         desc = "Tab prev",            silent = true },
+    { "<C-h>", "<CMD>wincmd h<CR>",        desc = "Move to left split", },
+    { "<C-j>", "<CMD>wincmd j<CR>",        desc = "Move to split above", },
+    { "<C-k>", "<CMD>wincmd k<CR>",        desc = "Move to split below", },
+    { "<C-l>", "<CMD>wincmd l<CR>",        desc = "Move to right split", },
+    { "<M-]>", "<C-\\><C-n><CMD>tabn<CR>", desc = "Tab next",            silent = true },
+    { "<M-[>", "<C-\\><C-n><CMD>tabp<CR>", desc = "Tab prev",            silent = true },
     {
       "<M-\\>",
       function()
