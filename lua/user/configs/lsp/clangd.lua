@@ -7,7 +7,7 @@ return {
     "-p",
     "MemoryMax=32G",
     "--user",
-    "clangd",
+    "direnv", "exec", ".", "clangd",
     "--background-index",
     "--completion-style=detailed",
     -- "--clang-tidy",
