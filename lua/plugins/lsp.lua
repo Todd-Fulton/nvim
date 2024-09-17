@@ -7,16 +7,6 @@
 
 local has_trouble = require "user.configs.keymaps".is_installed("trouble.nvim")
 
--- local lsp_methods = {
---   "workspace/applyEdit",
---   "workspace/configuration",
---   "workspace/workspaceFolders",
---   "typeHierarchy/supertypes",
---   "typeHierarchy/subtypes",
---   "textDocument/implementation",
---   "callHierarchy/outgoingCalls",
---   "callHierarchy/incomingCalls",
-
 local function activate_codelens()
   local bufnr = vim.api.nvim_get_current_buf()
   local group = vim.api.nvim_create_augroup("lsp_codelens", { clear = true })
@@ -377,7 +367,7 @@ return {
     end,
   }, {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+  lazy = false,
   dependencies = {
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
@@ -500,24 +490,39 @@ return {
           name = "custom", -- can be "custom", "wildmenu" or "native"
         }
       },
-      -- mapping = cmp.mapping.preset.cmdline(),
       sources = {
         { name = 'buffer' }
-      }
+      },
+      mapping = {
+        ["<C-k>"] = { c = cmp.mapping.select_prev_item() }, -- previous suggestion
+        ["<C-j>"] = { c = cmp.mapping.select_next_item() }, -- next suggestion
+        ["<C-Space>"] = { c = cmp.mapping.complete() }, -- show completion suggestions
+        ["<C-e>"] = { c = cmp.mapping.abort() },        -- close completion window
+        ["<CR>"] = { c = cmp.mapping.confirm({ select = false }) },
+      },
     })
 
     -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
     cmp.setup.cmdline(':', {
+      view = {
+        entries = {
+          name = "custom", -- can be "custom", "wildmenu" or "native"
+        }
+      },
       sources = cmp.config.sources({
         { name = 'path' }
       }, {
         { name = 'cmdline' }
       }),
+      mapping = {
+        ["<C-k>"] = { c = cmp.mapping.select_prev_item() }, -- previous suggestion
+        ["<C-j>"] = { c = cmp.mapping.select_next_item() }, -- next suggestion
+        ["<C-e>"] = { c = cmp.mapping.abort() },        -- close completion window
+        ["<CR>"] = { c = cmp.mapping.confirm({ select = false }) },
+      },
       ---@diagnostic disable-next-line: missing-fields
       matching = { disallow_symbol_nonprefix_matching = false }
     })
-    vim.api.nvim_set_keymap("c", "<C-j>", "<C-n>", {})
-    vim.api.nvim_set_keymap("c", "<C-k>", "<C-p>", {})
   end,
 },
 }
