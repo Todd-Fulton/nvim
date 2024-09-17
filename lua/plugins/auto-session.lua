@@ -9,7 +9,7 @@ return {
     -- save workspace session for current working directory
     vim.api.nvim_set_keymap("n", "<leader>Ss", "<cmd>SessionSave<CR>", { desc = "Save session for cwd" })
   end,
-  cmd = "SessionRestore",
+  cmd = { "SessionRestore", "SessionSave"},
   opts = function(_, opts)
     return vim.tbl_deep_extend('force', opts or {},
       {
