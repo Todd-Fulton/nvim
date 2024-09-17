@@ -22,6 +22,7 @@ require "user.vim-opts"
 require("lazy").setup(
 {
     { import = "plugins" },
+    { import = "plugins.coding" },
 },
 {
   ui = { backdrop = 100 },
