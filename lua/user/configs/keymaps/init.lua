@@ -148,8 +148,8 @@ M.mappings = {
     { "<C-j>", "<CMD>wincmd j<CR>", desc = "Move to split above", },
     { "<C-k>", "<CMD>wincmd k<CR>", desc = "Move to split below", },
     { "<C-l>", "<CMD>wincmd l<CR>", desc = "Move to right split", },
-    { "<M-]>", ":tabn<CR>",         desc = "Tab next",            silent = true },
-    { "<M-[>", ":tabp<CR>",         desc = "Tab prev",            silent = true },
+    { "<M-]>", "<C-\\><C-n><CMD>tabn<CR>",         desc = "Tab next",            silent = true },
+    { "<M-[>", "<C-\\><C-n><CMD>tabp<CR>",         desc = "Tab prev",            silent = true },
     {
       "<M-\\>",
       function()
