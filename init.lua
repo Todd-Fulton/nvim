@@ -23,6 +23,7 @@ require("lazy").setup(
 {
     { import = "plugins" },
     { import = "plugins.coding" },
+    { import = "plugins.ui" },
 },
 {
   ui = { backdrop = 100 },
