@@ -388,16 +388,18 @@ return {
 
       -- Add cmp default_capabilities to each config, and call setup
       for server, config in pairs(user_config.configs) do
-        -- FIXME: use pcall to check if this works.
-        local default_config = require("lspconfig.server_configurations." .. server).default_config
-        default_config.handlers = vim.tbl_deep_extend('keep', default_config.handlers or {}, user_config.handlers)
-        -- override default config with user config
-        config = vim.tbl_deep_extend("keep", config, default_config)
-        config = vim.tbl_deep_extend("keep", config,
-          {
-            capabilities = capabilities,
-          })
-        lspconfig[server].setup(config)
+        local e, c = pcall(require("lspconfig.server_configurations." .. server))
+        -- TODO: Handle e
+        if not e then
+          c.default_config.handlers = vim.tbl_deep_extend('keep', c.default_config.handlers or {}, user_config.handlers)
+          -- override default config with user config
+          config = vim.tbl_deep_extend("keep", config, c.default_config)
+          config = vim.tbl_deep_extend("keep", config,
+            {
+              capabilities = capabilities,
+            })
+          lspconfig[server].setup(config)
+        end
       end
     end,
   },
