@@ -2,6 +2,6 @@ return {
   "norcalli/nvim-colorizer.lua",
   ft = {"lua"},
   opts = {
-    "lua"
+    "lua", "markdown", "markdown_inline", "html",
   }
 }
