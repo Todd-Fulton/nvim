@@ -5,7 +5,6 @@ return {
   keys = {{"<leader>ta", nil, desc = "New tab", { silent = true}}},
   config = function ()
     vim.o.showtabline = 2
-    vim.opt.sessionoptions = "buffers,curdir,folds,globals,help,tabpages,terminal,winsize"
     local theme = {
       fill = "TabLineFill",
       -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }

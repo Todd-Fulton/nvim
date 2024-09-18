@@ -38,7 +38,7 @@ opt.backup = false
 opt.writebackup = false
 opt.swapfile = false
 opt.undofile = true -- yes, we want history, but not swap files
-vim.o.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,help,localoptions,terminal"
+opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,help,localoptions,terminal"
 
 -- general file stuffs
 opt.fileencoding = "utf-8"

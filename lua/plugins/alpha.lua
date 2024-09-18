@@ -25,13 +25,14 @@ return {
     -- Set menu
     dashboard.section.buttons.val = {
       dashboard.button("e", "  > New File", "<CMD>ene<CR>"),
-      dashboard.button("SPC o", "  > Toggle file explorer", "<CMD>Neotree<CR>"),
-      dashboard.button("SPC ff", "󰱽  > Find file", "<CMD>Telescope find_files<CR>"),
-      dashboard.button("SPC fg", "󱩾  > Find word", "<CMD>Telescope live_grep<CR>"),
-      dashboard.button("SPC fr", "󰥌  > Find recently opened", "<CMD>Telescope oldfiles<CR>"),
-      dashboard.button("SPC Sr", "󰦛  > Restore Session", "<CMD>SessionRestore<CR>"),
-      dashboard.button("SPC fh", "󰘥  > Search help", "<CMD>Telescope help_tags<CR>"),
-      dashboard.button("SPC q", "󰈆  > Quit Neovim", "<CMD>qa<CR>"),
+      dashboard.button("SPC o", "  > Toggle file explorer"),
+      dashboard.button("SPC f f", "󰱽  > Find file"),
+      dashboard.button("SPC f g", "󱩾  > Find word"),
+      dashboard.button("SPC f r", "󰥌  > Find recently opened"),
+      dashboard.button("SPC S l", "󰦛  > Load Session"),
+      dashboard.button("SPC f w", "󱅙  > Open Workspace"),
+      dashboard.button("SPC f h", "󰘥  > Search help"),
+      dashboard.button("SPC q ", "󰈆  > Quit Neovim"),
     }
 
     dashboard.config.opts.noautocmd = true
