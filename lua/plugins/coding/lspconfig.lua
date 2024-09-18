@@ -214,6 +214,21 @@ local default_lsp_keymaps = {
       desc = "Toggle symantic highlighting"
     },
   },
+
+  ["textDocument/prepareCallHierarchy"] = {
+    { "<Leader>lh", group = "Call Hierarchy" },
+    ["callHierarchy/incomingCalls"] = {
+      "<Leader>lhi",
+      "<CMD>Telescope lsp_incoming_calls<CR>",
+      desc = "Show incoming calls"
+    },
+
+    ["callHierarchy/outgoingCalls"] = {
+      "<Leader>lho",
+      "<CMD>Telescope lsp_outgoing_calls<CR>",
+      desc = "Show outgoing calls"
+    },
+  }
 }
 
 local default_aucmds = {
@@ -309,36 +324,11 @@ return {
             require "clangd_extensions"
             local wk = require "which-key"
             wk.add({
-              "<Leader>lh",
+              "<Leader>lz",
               "<CMD>ClangdSwitchSourceHeader<CR>",
               desc = "switch source/header file",
               buffer = ev.buf,
               silent = true,
-            })
-
-            local group = vim.api.nvim_create_augroup("clangd_no_inlay_hints_in_insert", { clear = true })
-
-            wk.add({
-              "<leader>li",
-              function()
-                if require("clangd_extensions.inlay_hints").toggle_inlay_hints() then
-                  vim.api.nvim_create_autocmd("InsertEnter", {
-                    group = group,
-                    buffer = ev.buf,
-                    callback = require("clangd_extensions.inlay_hints").disable_inlay_hints,
-                  })
-                  vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
-                    group = group,
-                    buffer = ev.buf,
-                    callback = require("clangd_extensions.inlay_hints").set_inlay_hints,
-                  })
-                else
-                  vim.api.nvim_clear_autocmds({ group = group, buffer = ev.buf })
-                end
-              end,
-              buffer = ev.buf,
-              silent = true,
-              desc = "Toggle inlay hints",
             })
           end
         end,
