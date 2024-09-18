@@ -24,7 +24,7 @@ return {
       colors.bg_statusline = my_colors.transparent
       colors.bg_visual = my_colors.bg_visual
       colors.border = my_colors.bg_dark
-      colors.fg = my_colors.fg
+      colors.fg = my_colors.shakespeare
       colors.fg_dark = my_colors.fg_dark
       colors.fg_float = my_colors.fg
       colors.fg_gutter = my_colors.fg_gutter
