@@ -4,10 +4,11 @@ return {
     "nvim-lua/plenary.nvim",         -- required
     "sindrets/diffview.nvim",        -- optional - Diff integration
 
-    -- Only one of these is needed, not both.
     "nvim-telescope/telescope.nvim", -- optional
   },
   cmd = "Neogit",
-  keys = {{"<Leader>gv", "<CMD>Neogit kind=replace<CR>", desc = "Open Neogit" }},
-  opts = {},
+  keys = {{"<Leader>gv", "<CMD>Neogit<CR>", desc = "Open Neogit" }},
+  opts = {
+    graph_stype = "unicode",
+  },
 }
