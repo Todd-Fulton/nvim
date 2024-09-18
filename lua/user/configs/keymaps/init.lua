@@ -131,8 +131,6 @@ M.mappings = {
     { "<Leader>gd", M.cmd("Fugit2Diff"),  desc = "Open diff view",  cond = enable_fugit2 },
     { "<Leader>gb", M.cmd("Fugit2Blame"), desc = "Open blame view", cond = enable_fugit2 },
     { "<Leader>gg", M.cmd("Fugit2Graph"), desc = "Open graph view", cond = enable_fugit2 },
-
-    { "<Leader>gv", M.cmd("Neogit"),      desc = "Open Neogit",     cond = enable_neogit },
   },
   -- Splits
   {
