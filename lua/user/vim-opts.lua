@@ -99,7 +99,10 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.api.nvim_set_option_value("relativenumber", false, {
       scope = "local",
     })
-    vim.api.nvim_set_option_value("signcolumn", nil, {
+    vim.api.nvim_set_option_value("signcolumn", "no", {
+      scope = "local",
+    })
+    vim.api.nvim_set_option_value("foldcolumn", "0", {
       scope = "local",
     })
     vim.api.nvim_set_option_value("wrap", true, {
