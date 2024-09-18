@@ -10,5 +10,8 @@ return {
   keys = {{"<Leader>gv", "<CMD>Neogit<CR>", desc = "Open Neogit" }},
   opts = {
     graph_stype = "unicode",
+    commit_editor = {
+      kind = "auto",
+    },
   },
 }
