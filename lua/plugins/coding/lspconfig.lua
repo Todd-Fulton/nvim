@@ -26,9 +26,31 @@ local function deactivate_codelens()
   vim.lsp.codelens.clear(nil, bufnr)
 end
 
+
+local function set_symantic_tokens(bufnr, on, silent)
+  bufnr = bufnr or 0
+  vim.b[bufnr].semantic_tokens = on
+  for _, client in ipairs(vim.lsp.get_clients { bufnr = bufnr }) do
+    if client.supports_method "textDocument/semanticTokens/full" then
+      vim.lsp.semantic_tokens[on and "start" or "stop"](bufnr, client.id, {})
+      vim.lsp.semantic_tokens.force_refresh(bufnr)
+    end
+  end
+  if silent == false then
+    vim.notify(("Symantic highlighting has been %s"):format(on and "enabled" or "disabled"))
+  end
+end
+
+
+local function toggle_symantic_tokens(silent)
+  local bufnr = vim.api.nvim_get_current_buf()
+  set_symantic_tokens(bufnr, not vim.b[bufnr].semantic_tokens, silent)
+end
+
 local default_lsp_keymaps = {
   { "<Leader>l",  group = "Lsp" },
   { "<Leader>ls", group = "Search" },
+  { "<Leader>lt", group = "Toggle" },
   ["textDocument/references"] = {
     "<Leader>lsr",
     "<cmd>Telescope lsp_references<cr>",
@@ -93,9 +115,8 @@ local default_lsp_keymaps = {
   },
 
   ["textDocument/codeLens"] = {
-    { "<Leader>ll", group = "Codelens" },
     {
-      "<Leader>llt",
+      "<Leader>ltl",
       function()
         vim.g.codelens_enabled = not vim.g.codelens_enabled
         if vim.g.codelens_enabled then
@@ -110,7 +131,7 @@ local default_lsp_keymaps = {
 
   ["textDocument/inlayHint"] = {
     {
-      "<Leader>li",
+      "<Leader>lti",
       function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
       end,
@@ -163,26 +184,34 @@ local default_lsp_keymaps = {
       desc = "Workspace symbols (Telescope)"
     },
 
-    ["workspace/symbol"] = {
-      {
-        "<Leader>lsS",
-        function()
-          require("telescope.builtin").lsp_dynamic_workspace_symbols({
-            symbols = {
-              "class",
-              "function",
-              "file",
-              "module",
-              "method",
-              "enum",
-              "interface",
-              "struct",
-              "variable",
-            }
-          })
-        end,
-        desc = "Workspace symbols (Telescope)"
-      },
+    {
+      "<Leader>lsS",
+      function()
+        require("telescope.builtin").lsp_dynamic_workspace_symbols({
+          symbols = {
+            "class",
+            "function",
+            "file",
+            "module",
+            "method",
+            "enum",
+            "interface",
+            "struct",
+            "variable",
+          }
+        })
+      end,
+      desc = "Workspace symbols (Telescope)"
+    },
+  },
+
+  ["textDocument/semanticTokens/full"] = {
+    {
+      "<Leader>lts",
+      function()
+        toggle_symantic_tokens(false)
+      end,
+      desc = "Toggle symantic highlighting"
     },
   },
 }
@@ -264,6 +293,14 @@ return {
               v[1]()
             end
           end
+
+          -- TODO: use an option to disable in user configs
+          if client.supports_method "textDocument/symanticTokens/full" then
+            vim.b[ev.buf].semantic_tokens = true
+          else
+            vim.b[ev.buf].semantic_tokens = false
+          end
+          set_symantic_tokens(ev.buf, vim.b[ev.buf].semantic_tokens, true)
 
           -- TODO: Move this out to a generalized config, see:
           -- https://github.com/AstroNvim/astrocommunity/blob/main/lua/astrocommunity/pack/cpp/init.lua
