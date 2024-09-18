@@ -17,7 +17,9 @@ return {
       -- this is required, since the default filter skips nobuflisted buffers
       return true
     end,
-    extensions = { scope = {} },     -- add scope.nvim extension
+    extensions = {
+      scope = {}, -- add scope.nvim extension
+    },
   },
   dependencies = {
     {
@@ -43,6 +45,8 @@ return {
       "<Leader>Sl",
       function()
         require("resession").load()
+        --- Triggers SessionLoadPost which alpha.nvim uses to close
+        vim.api.nvim_exec_autocmds("SessionLoadPost", {})
       end,
       desc = "Load Session"
     },
@@ -53,5 +57,5 @@ return {
       end,
       desc = "Delete Session"
     },
-  }
+  },
 }
