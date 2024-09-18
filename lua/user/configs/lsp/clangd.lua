@@ -14,4 +14,7 @@ return {
     "--enable-config",
     "--completion-parse=auto",
   },
+  capabilities = {
+    offsetEncoding = "utf-8",
+  },
 }
