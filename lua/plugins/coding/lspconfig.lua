@@ -1,4 +1,3 @@
-
 local has_trouble = require "user.configs.keymaps".is_installed("trouble.nvim")
 
 local function activate_codelens()
@@ -338,9 +337,14 @@ return {
       require("lspconfig.ui.windows").default_options.border = "rounded"
 
       -- used to enable autocompletion (assign to every lsp server config)
-      local cmp_capabilities = cmp_nvim_lsp.default_capabilities(
+      local capabilities = cmp_nvim_lsp.default_capabilities(
         vim.lsp.protocol.make_client_capabilities()
       )
+
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true
+      }
 
       -- Load top level configs for modularity
       local user_config = require "user.configs.lsp"
@@ -354,7 +358,7 @@ return {
         config = vim.tbl_deep_extend("keep", config, default_config)
         config = vim.tbl_deep_extend("keep", config,
           {
-            capabilities = cmp_capabilities,
+            capabilities = capabilities,
           })
         lspconfig[server].setup(config)
       end
