@@ -1,32 +1,14 @@
 local M = {}
 
+local Class = require('cake.types.class')
+
 local _value = {}
 local _refinement = {}
-local _type = {}
 
----@generic T : Class
----@class Instance<T>
----@field [table] `T` [_type] stores the Class this Instance belongs to
----
-
----Classes are constructors
----@class Class
----@field is_instance fun(self: Class, v: any) : boolean
----@field protected vtable table
----@overload fun(...) : Instance<Class> Constructor, returns an instance of Class T
--- TODO: Classes should be able to be extended or inhereted
-
----@generic T : Class
+---@generic T : cake.Class
 ---@class ClassTemplate
 ---@overload fun(...) : `T` ClassTemplates are type constructors
 
-
----@generic T
----@param v Instance<T>
----@return `T`|nil
-function M.typeof(v)
-  return type(v) == "table" and v[_type] or nil
-end
 
 local refm_vtable = {
   __newindex = function(t, k, v)
@@ -54,7 +36,7 @@ local refm_vtable = {
 }
 
 --- Refinement is a ClassTemplate.
----@generic R : Class
+---@generic R : cake.Class
 ---@generic T
 ---@class Refinement : ClassTemplate<`R`>
 M.Refinement = {}
@@ -70,16 +52,18 @@ local function get_refine_vtable(T)
   local tty = type(T)
 
   if tty == "table" then
-    for k, v in pairs(getmetatable(T)) do
-      if not (k == "__index" or "__newindex") then
-        proxy_mt[k] = function(...) -- forward to _value metafuncs
-          return v(...)
+    if T.vtable ~= nil then
+      setmetatable(proxy_mt, T.vtable)
+    else
+      for k, v in pairs(getmetatable(T)) do
+        if type(v) == "function" and not (k == "__index" or "__newindex") then
+          proxy_mt[k] = v
         end
       end
     end
   elseif tty == "string" then
     proxy_mt.__eq = function(a, b)
-      return a._value == b.value
+      return a.value == (b[_refinement] ~= nil and b.value or b)
     end
     if T == "string" or T == "table" then
       proxy_mt.__len = function(t)
@@ -87,30 +71,30 @@ local function get_refine_vtable(T)
       end
       if T == "string" then
         proxy_mt.__concat = function(a, b)
-          return a.value .. b.value
+          return a.value .. (b[_refinement] ~= nil and b.value or b)
         end
       end
     elseif T == "number" then
       proxy_mt.__add = function(a, b)
-        return a.value + b.value
+        return a.value + (b[_refinement] ~= nil and b.value or b)
       end
       proxy_mt.__sub = function(a, b)
-        return a.value - b.value
+        return a.value - (b[_refinement] ~= nil and b.value or b)
       end
       proxy_mt.__mul = function(a, b)
-        return a.value * b.value
+        return a.value * (b[_refinement] ~= nil and b.value or b)
       end
       proxy_mt.__div = function(a, b)
-        return a.value / b.value
+        return a.value / (b[_refinement] ~= nil and b.value or b)
       end
       proxy_mt.__unm = function(a)
         return -a.value
       end
       proxy_mt.__mod = function(a, b)
-        return a.value % b.value
+        return a.value % (b[_refinement] ~= nil and b.value or b)
       end
       proxy_mt.__pow = function(a, b)
-        return a.value ^ b.value
+        return a.value ^ (b[_refinement] ~= nil and b.value or b)
       end
     elseif T == "function" then
       proxy_mt.__call = function(t, ...)
@@ -119,10 +103,10 @@ local function get_refine_vtable(T)
     end
     if T ~= "function" and T ~= "boolean" then
       proxy_mt.__lt = function(a, b)
-        return a.value < b.value
+        return a.value < (b[_refinement] ~= nil and b.value or b)
       end
       proxy_mt.__le = function(a, b)
-        return a.value <= b.value
+        return a.value <= (b[_refinement] ~= nil and b.value or b)
       end
     end
     if T ~= "function" and T ~= "table" then
@@ -140,9 +124,9 @@ end
 -- A RefinementType should be a factory of values of checked T
 
 ---@generic T
----@class DefaultRefinement : Class
+---@class DefaultRefinement : cake.Class
 ---@field check fun(self, v : `T`) : boolean
-local DefaultRefinement = {}
+local DefaultRefinement = Class:extend()
 DefaultRefinement.__index = DefaultRefinement
 
 ---@param self DefaultRefinement
@@ -153,13 +137,12 @@ end
 
 ---@private
 function DefaultRefinement:run_checks(v)
-  if getmetatable(self) ~= self then
+  if getmetatable(self) and getmetatable(self) ~= self then
     return getmetatable(self):run_checks(v) and self:check(v)
   else
     return self:check(v)
   end
 end
-
 
 function DefaultRefinement:check(_)
   return true
@@ -181,15 +164,6 @@ end
 
 function DefaultRefinement:__tostring()
   return "Refinement"
-end
-
----@generic R RefinementImpl
----@class table : {check : ( fun(self, v : `T`) : boolean ), [any]: any}
----@return `R`
-function DefaultRefinement:extend(cls)
-  cls.__index = cls
-  setmetatable(cls, self)
-  return cls
 end
 
 setmetatable(DefaultRefinement, DefaultRefinement)
@@ -285,5 +259,6 @@ vim.print(string.format("a is a Number: %s", Number:is_instance(a)))
 vim.print(string.format("c is a Number: %s", Number:is_instance(c)))
 vim.print(string.format("3 is a Number: %s", Number:is_instance(3)))
 
-return M
+c.value = "2"
 
+return M
