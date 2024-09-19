@@ -91,7 +91,14 @@ vim.cmd "digraphs sz 120015" -- 𝓏
 -- When opening a terminal
 -- Disable number, relativenumber signcolmn,
 -- Enable line wrap
+-- Set terminal forground to white
+vim.api.nvim_set_hl(0, "TerminalForeground", {
+  fg = "#DECAFE",
+  bg = "bg"
+})
+vim.api.nvim_create_augroup("_terminal", { clear = true })
 vim.api.nvim_create_autocmd("TermOpen", {
+  group = "_terminal",
   callback = function (_)
     vim.api.nvim_set_option_value("number", false, {
       scope = "local",
@@ -107,6 +114,9 @@ vim.api.nvim_create_autocmd("TermOpen", {
     })
     vim.api.nvim_set_option_value("wrap", true, {
       scope = "local",
+    })
+    vim.api.nvim_set_option_value("winhighlight", "Normal:TerminalForeground", {
+      scope = "local"
     })
   end
 })
