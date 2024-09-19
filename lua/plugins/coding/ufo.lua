@@ -29,13 +29,13 @@ return {
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
       vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+      require("ufo").setup(opts)
       vim.keymap.set("n", "zR", function()
         require("ufo").openAllFolds()
       end)
       vim.keymap.set("n", "zM", function()
         require("ufo").closeAllFolds()
       end)
-      require("ufo").setup(opts)
     end,
   },
 }
