@@ -297,12 +297,13 @@ return {
         },
         ["<2-LeftMouse>"] = "open",
         ["<cr>"] = "open",
+        ["l"] = "open",
         -- ["<cr>"] = { "open", config = { expand_nested_files = true } }, -- expand nested file takes precedence
         ["<esc>"] = "cancel", -- close preview or floating neo-tree window
-        ["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = false } },
+        ["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = true } },
         ["<C-f>"] = { "scroll_preview", config = { direction = -10 } },
         ["<C-b>"] = { "scroll_preview", config = { direction = 10 } },
-        ["l"] = "focus_preview",
+        ["F"] = "focus_preview",
         ["S"] = "open_split",
         -- ["S"] = "split_with_window_picker",
         ["s"] = "open_vsplit",
@@ -314,6 +315,7 @@ return {
         -- ["t"] = "open_tab_drop",
         ["w"] = "open_with_window_picker",
         ["C"] = "close_node",
+        ["h"] = "close_node",
         ["z"] = "close_all_nodes",
         --["Z"] = "expand_all_nodes",
         ["R"] = "refresh",
