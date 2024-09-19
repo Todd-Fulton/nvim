@@ -5,8 +5,13 @@ opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.numberwidth = 2
 opt.wrap = false
-opt.scrolloff = 10 -- lines to keep above/below cursor
-opt.sidescrolloff = 8 -- columns to keep left/right cursor
+opt.scrolloff = 10           -- lines to keep above/below cursor
+opt.sidescrolloff = 8        -- columns to keep left/right cursor
+opt.foldcolumn = "1"       -- '0' is not bad
+opt.foldlevel = 99         -- Using ufo provider need a large value, feel free to decrease the value
+opt.foldlevelstart = 99
+opt.foldenable = true
+opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
 opt.expandtab = true
 opt.tabstop = 2
@@ -99,7 +104,7 @@ vim.api.nvim_set_hl(0, "TerminalForeground", {
 vim.api.nvim_create_augroup("_terminal", { clear = true })
 vim.api.nvim_create_autocmd("TermOpen", {
   group = "_terminal",
-  callback = function (_)
+  callback = function(_)
     vim.api.nvim_set_option_value("number", false, {
       scope = "local",
     })
@@ -124,7 +129,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
 -- For C++ files, set indent width to 4
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c", "cpp" },
-  callback = function ()
+  callback = function()
     vim.api.nvim_set_option_value("shiftwidth", 4, {
       scope = "local",
     })

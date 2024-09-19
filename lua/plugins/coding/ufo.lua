@@ -1,3 +1,7 @@
+local ft_ignore = {
+  "neo-tree", "NeogitStatus", "alpha"
+}
+
 return {
   -- UFO folding
   {
@@ -9,6 +13,7 @@ return {
         config = function()
           local builtin = require("statuscol.builtin")
           require("statuscol").setup({
+            ft_ignore = ft_ignore,
             relculright = true,
             segments = {
               { text = { builtin.foldfunc },      click = "v:lua.ScFa" },
@@ -23,12 +28,15 @@ return {
     opts = {},
 
     config = function(_, opts)
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = ft_ignore,
+        callback = function()
+          require('ufo').detach()
+          vim.api.nvim_set_option_value("foldenable", false, { scope = "local" })
+          vim.api.nvim_set_option_value("foldcolumn", "0", { scope = "local" })
+        end,
+      })
       -- UFO folding
-      vim.o.foldcolumn = "2" -- '0' is not bad
-      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
-      vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
       require("ufo").setup(opts)
       vim.keymap.set("n", "zR", function()
         require("ufo").openAllFolds()
