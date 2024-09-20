@@ -67,12 +67,12 @@ left corner of Neovim, and buffers open in the current tab are listed in the upp
 You can save a session with multiple open workspaces/tabs using [resession.nvim](https://github.com/stevearc/resession.nvim)
 
 ### Keymaps related to Workspaces and Tabs
-`<Leader>ta` Open a new tab
-`<Leader>tn` Move to next tab (to the right)
-`<Leader>tp` Move to prev tab (to the left)
-`<M-]>` Move to next tab (to the right)
-`<M-[>` Move to prev tab (to the left)
-`<Leader>tc` Close the current tab
+- `<Leader>ta` Open a new tab
+- `<Leader>tn` Move to next tab (to the right)
+- `<Leader>tp` Move to prev tab (to the left)
+- `<M-]>` Move to next tab (to the right)
+- `<M-[>` Move to prev tab (to the left)
+- `<Leader>tc` Close the current tab
 
 With [which-key](https://github.com/folke/which-key.nvim) you can use:
 
