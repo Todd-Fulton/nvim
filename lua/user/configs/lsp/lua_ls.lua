@@ -33,7 +33,7 @@ return {
         enable = true,
       },
       hint = {
-        arrayIndex = "Auto",
+        arrayIndex = "Disable",
         await = true,
         enable = true,
         setType = true,

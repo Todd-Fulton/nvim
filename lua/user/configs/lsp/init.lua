@@ -30,4 +30,11 @@ M.handlers = {
       ),
 }
 
+M.global = {
+  semantic_tokens = true,
+  hints = true,
+  codelens = true,
+  format_on_save = false,
+}
+
 return M
