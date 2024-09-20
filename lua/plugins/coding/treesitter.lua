@@ -141,6 +141,7 @@ return {
           },
         },
       }
+      vim.treesitter.language.register("bash", "zsh")
     end,
   },
   {

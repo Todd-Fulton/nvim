@@ -1,4 +1,4 @@
-local ft = { "lua", "c", "cpp" }
+local ft = { "lua", "c", "cpp", "bash", "sh", "zsh" }
 
 return {
   "danymat/neogen",
@@ -7,12 +7,16 @@ return {
   dependencies = {
     "L3MON4D3/LuaSnip"
   },
-  opts = {
-    snippet_engine = "luasnip",
-    languages = {
-      lua = { template = { annotation_convention = "emmylua" } },
-    },
-  },
+  opts = function(_, opts)
+    opts = vim.tbl_deep_extend('force', opts or {}, {
+      snippet_engine = "luasnip",
+      languages = {
+        lua = { template = { annotation_convention = "emmylua" } },
+        zsh = require("neogen.configurations.sh"),
+      },
+    })
+    return opts
+  end,
   ft = ft,
   init = function()
     vim.api.nvim_create_autocmd("FileType", {
