@@ -24,6 +24,8 @@ require("lazy").setup(
     { import = "plugins" },
     { import = "plugins.coding" },
     { import = "plugins.coding.cpp" },
+    { import = "plugins.coding.lua" },
+    { import = "plugins.coding.markdown" },
     { import = "plugins.ui" },
 },
 {
