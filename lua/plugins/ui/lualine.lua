@@ -1,3 +1,22 @@
+local function active_lsps()
+  local msg = {}
+  local buf_ft = vim.bo.filetype
+  local clients = vim.lsp.get_clients()
+  if next(clients) == nil then
+    return msg
+  end
+  for _, client in ipairs(clients) do
+    local filetypes = client.config.filetypes
+    if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+      msg[#msg+1] = client.name
+    end
+  end
+  return table.concat(msg, ", ")
+end
+
+local function active_treesitter()
+end
+
 return {
   'nvim-lualine/lualine.nvim',
   dependencies = {
@@ -11,16 +30,6 @@ return {
       options = {
         icons_enabled = true,
         theme = 'tokyonight',
-        -- theme = {
-        --   normal = {
-        --     a = { fg = my_colors.fg_dark, bg = my_colors.bg_visual, gui = "bold" },
-        --     b = { fg = my_colors.orange, bg = my_colors.bg_dark, gui = "italic" },
-        --     c = { fg = my_colors.fg, bg = my_colors.transparent },
-        --     x = { fg = my_colors.fg, bg = my_colors.transparent },
-        --     y = { fg = my_colors.bg_search, bg = my_colors.bg_dark },
-        --     z = { fg = my_colors.fg_dark, bg = my_colors.bg_visual, gui = "bold" },
-        --   },
-        -- },
         component_separators = { left = '', right = '' },
         section_separators = { left = '', right = '' },
         disabled_filetypes = {
@@ -51,8 +60,8 @@ return {
               if noice.api.status.mode.has() then
                 -- keep noice and lualine the same
                 local mode = require("noice").api.status.mode.get()
-                  :gsub("-- ", "")
-                  :gsub(" --", "")
+                    :gsub("-- ", "")
+                    :gsub(" --", "")
                 return mode == "VISUAL" and mode or mode:gsub("VISUAL", "V-")
               else
                 return require("lualine.components.mode")()
@@ -65,6 +74,12 @@ return {
           -- { 'aerial', padding = { left = 4, right = 0 } }
         },
         lualine_x = {
+          {
+            active_lsps,
+            icon = ' LSP:',
+            color = { fg = require("user.configs.ui.colors").shuttle_gray, gui = 'bold' },
+            cond = function() return #active_lsps() ~= 0 end,
+          },
           {
             require("noice").api.status.search.get,
             cond = require("noice").api.status.search.has,
