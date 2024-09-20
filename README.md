@@ -61,7 +61,7 @@ scoped to that workspace/tab.
 
 With scoped buffers, tabs are like windows in tmux.
 
-Using (tabby)[https://github.com/nanozuki/tabby.nvim], opened tabs are shown in the upper
+Using [tabby](https://github.com/nanozuki/tabby.nvim), opened tabs are shown in the upper
 left corner of Neovim, and buffers open in the current tab are listed in the upper left.
 
 You can save a session with multiple open workspaces/tabs using (resession.nvim)[https://github.com/stevearc/resession.nvim]
