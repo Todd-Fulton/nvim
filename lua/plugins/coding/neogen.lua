@@ -9,7 +9,7 @@ return {
   opts = {
     snippet_engine = "luasnip",
     languages = {
-      lua = { template = { annotation_convention = "ldoc" } },
+      lua = { template = { annotation_convention = "emmylua" } },
     },
   },
   ft = ft,
@@ -43,7 +43,6 @@ return {
           },
           {
             "<Leader>at",
-            --- [TODO:description]
             function()
               require('neogen').generate({ type = 'type' })
             end,
