@@ -50,6 +50,11 @@ return {
               "fillchars",
               [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
               , { scope = "local" })
+            vim.api.nvim_set_option_value("statuscolumn",
+              "%!v:lua.require('statuscol').get_statuscol_string()", {
+                scope = "local",
+                buffer = ev.bufm
+              })
             vim.keymap.set("n", "zR", function()
               require("ufo").openAllFolds()
             end, {
