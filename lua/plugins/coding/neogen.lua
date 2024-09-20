@@ -1,4 +1,5 @@
 local ft = { "lua", "c", "cpp" }
+
 return {
   "danymat/neogen",
   -- Uncomment next line if you want to follow only stable versions
@@ -19,6 +20,17 @@ return {
       callback = function(ev)
         require("which-key").add({
           { "<Leader>a", group = "Annotate", icon = "" },
+          {
+            "<Leader>aa",
+            function()
+              require('neogen').generate()
+            end,
+            desc = "Annotate element under the cursor",
+            icon = "",
+            silent = true,
+            noremap = true,
+            buffer = ev.buf,
+          },
           {
             "<Leader>af",
             function()
