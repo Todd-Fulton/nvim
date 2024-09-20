@@ -37,7 +37,7 @@ local refm_vtable = {
 
 --- Refinement is a ClassTemplate.
 ---@generic R : cake.Class
----@generic T
+---@generic T : cake.Class|string
 ---@class Refinement : ClassTemplate<`R`>
 M.Refinement = {}
 M.Refinement.__index = M.Refinement
@@ -168,14 +168,27 @@ end
 
 setmetatable(DefaultRefinement, DefaultRefinement)
 
+
 ---@param self Refinement<`R`, `T`>
 ---@param class `T`|string
 ---@param impl {check: (fun(self, v) : boolean), error? : fun(t, u, v), [any] : any}
 ---@return `R`
 function M.Refinement:__call(class, impl)
-  ---@class impl `R`
+  ---TODO: impl needs to also inheret from class
+  ---NOTE: Use a mixin?
+  --- DefaultRefinment needs
+  --- check,
+  --- run_checks,
+  --- error,
+  --- modified is_instance,
+  --- modified __call,
+
+  ---@type cake.Class
   impl = impl or {}
   impl.vtable = get_refine_vtable(class)
+  if class.vtable ~= nil then
+    setmetatable(impl.vtable, class.vtable)
+  end
 
   return setmetatable(impl, DefaultRefinement)
 end

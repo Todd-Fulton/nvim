@@ -23,8 +23,8 @@ function Class:is_instance(v)
   return true
 end
 
-function Class:extend()
-  local cls = {}
+function Class:extend(c)
+  local cls = c or {}
   cls.vtable = {}
   cls.vtable.__index = cls.vtable
   setmetatable(cls.vtable, self.vtable)
@@ -34,7 +34,7 @@ end
 function Class:__call(o)
   o = o or {}
   o[_type] = self
-  setmetatable(o, self.vtable)
+  return setmetatable(o, self.vtable)
 end
 
 ---@generic T
