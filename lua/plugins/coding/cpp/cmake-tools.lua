@@ -5,5 +5,9 @@ return {
   dependencies = {
     'stevearc/overseer.nvim',
   },
-  opts = {}
+  opts = {
+    cmake_build_directory = function ()
+      return "build"
+    end
+  }
 }

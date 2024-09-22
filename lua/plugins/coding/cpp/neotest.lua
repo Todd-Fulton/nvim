@@ -6,15 +6,15 @@ return {
   },
   {
     "nvim-neotest/neotest",
-    ft = {"cpp", "c", "cmake"},
+    ft = { "cpp", "c", "cmake" },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
       "alfaix/neotest-gtest",
     },
-    opts = function()
-      return {
+    opts = function(_, opts)
+      opts = vim.tbl_deep_extend('force', opts or {}, {
         -- your neotest config here
         adapters = {
           require("neotest-gtest").setup {
@@ -24,6 +24,7 @@ return {
                 ["cc"] = true,
                 ["cxx"] = true,
                 ["c++"] = true,
+                ["c"] = true,
               }
               local Path = require "plenary.path"
               local elems = vim.split(file_path, Path.path.sep, { plain = true })
@@ -39,12 +40,13 @@ return {
                     filename,
                     "tests_"
                   ) or vim.endswith(fname_last_part, "_tests"))
-                or false
+                  or false
               return result
             end,
           },
         },
-      }
+      })
+      return opts
     end,
   },
 }

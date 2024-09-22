@@ -17,7 +17,6 @@ return {
         config = function()
           local builtin = require("statuscol.builtin")
           require("statuscol").setup({
-            ft_ignore = ft_ignore,
             relculright = true,
             segments = {
               { text = { builtin.foldfunc, "  " }, click = "v:lua.ScFa" },

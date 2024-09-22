@@ -9,13 +9,44 @@ return {
       "petertriho/cmp-git",
       "p00f/clangd_extensions.nvim",
       "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",   -- for autocompletion
+      "saadparwaiz1/cmp_luasnip",     -- for autocompletion
       "rafamadriz/friendly-snippets", -- useful snippets
     },
     config = function(_, opts)
       local cmp = require "cmp"
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
+      lspkind.setup({
+        mode = "symbol_text",
+        preset = 'codicons',
+        symbol_map = {
+          Text = "󰉿",
+          Method = "󰆧",
+          Function = "󰊕",
+          Constructor = "",
+          Field = "󰜢",
+          Variable = "󰀫",
+          Class = "󰠱",
+          Interface = "",
+          Module = "",
+          Property = "󰜢",
+          Unit = "󰑭",
+          Value = "󰎠",
+          Enum = "",
+          Keyword = "󰌋",
+          Snippet = "",
+          Color = "󰏘",
+          File = "󰈙",
+          Reference = "󰈇",
+          Folder = "󰉋",
+          EnumMember = "",
+          Constant = "󰏿",
+          Struct = "󰙅",
+          Event = "",
+          Operator = "󰆕",
+          TypeParameter = "",
+        },
+      })
       opts = opts or {}
 
       require("luasnip.loaders.from_vscode").lazy_load()
@@ -44,7 +75,7 @@ return {
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-          ["<C-e>"] = cmp.mapping.abort(),      -- close completion window
+          ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
           ["<C-m>"] = cmp.mapping(function(fallback)
             if luasnip.locally_jumpable(1) then
@@ -90,8 +121,19 @@ return {
         ---@diagnostic disable-next-line: missing-fields
         formatting = {
           format = lspkind.cmp_format {
-            maxwidth = 50,
-            ellipsis_char = "...",
+            mode = 'symbol', -- show only symbol annotations
+            maxwidth = 50,   -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+            -- can also be a function to dynamically calculate max width such as
+            -- maxwidth = function() return math.floor(0.45 * vim.o.columns) end,
+            ellipsis_char = '...',    -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+            show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+
+            -- The function below will be called before any actual modifications from lspkind
+            -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+            -- before = function(entry, vim_item)
+            -- ...
+            --   return vim_item
+            -- end
           },
         },
         sorting = {
@@ -130,8 +172,8 @@ return {
         mapping = {
           ["<C-k>"] = { c = cmp.mapping.select_prev_item() }, -- previous suggestion
           ["<C-j>"] = { c = cmp.mapping.select_next_item() }, -- next suggestion
-          ["<C-Space>"] = { c = cmp.mapping.complete() },   -- show completion suggestions
-          ["<C-e>"] = { c = cmp.mapping.abort() },          -- close completion window
+          ["<C-Space>"] = { c = cmp.mapping.complete() },     -- show completion suggestions
+          ["<C-e>"] = { c = cmp.mapping.abort() },            -- close completion window
           ["<CR>"] = { c = cmp.mapping.confirm({ select = false }) },
         },
       })
@@ -151,7 +193,7 @@ return {
         mapping = {
           ["<C-k>"] = { c = cmp.mapping.select_prev_item() }, -- previous suggestion
           ["<C-j>"] = { c = cmp.mapping.select_next_item() }, -- next suggestion
-          ["<C-e>"] = { c = cmp.mapping.abort() },          -- close completion window
+          ["<C-e>"] = { c = cmp.mapping.abort() },            -- close completion window
           ["<CR>"] = { c = cmp.mapping.confirm({ select = false }) },
         },
         ---@diagnostic disable-next-line: missing-fields
