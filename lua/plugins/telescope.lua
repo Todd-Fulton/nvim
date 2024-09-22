@@ -25,7 +25,7 @@ return {
     -- Setup mappings
     require 'user.configs.keymaps.init'.add({
       mode = { "n" },
-      { "<Leader>f", group = "Find" },
+      { "<Leader>f", group = "Find", icon = "" },
     })
   end,
   config = function(_, opts)

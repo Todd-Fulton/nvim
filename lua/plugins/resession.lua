@@ -58,4 +58,7 @@ return {
       desc = "Delete Session"
     },
   },
+  init = function ()
+    require('which-key').add({"<Leader>S", group = "Sessions", icon = ""})
+  end
 }

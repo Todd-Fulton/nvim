@@ -82,8 +82,8 @@ M.mappings = {
     mode = { "n", "v" }, -- NORMAL and VISUAL mode
     { "<leader>q", "<cmd>confirm q<cr>",  desc = "Quit Window" },
     { "<leader>Q", "<cmd>confirm qa<cr>", desc = "Exit" },
-    { "<leader>w", "<cmd>w<cr>",          desc = "Write" },
-    { "<leader>W", "<cmd>wa<cr>",         desc = "Write all" },
+    { "<leader>w", "<cmd>w<cr>",          desc = "Write", icon = "" },
+    { "<leader>W", "<cmd>wa<cr>",         desc = "Write all", icon = "󰷬" },
   },
   {
     mode = { "n", "i" },
@@ -137,7 +137,7 @@ M.mappings = {
     mode = { "n" },
     { "<C-\\>",     "<C-w>v",              desc = "Split verticle" },
     { "<C-->",      "<C-w>s",              desc = "Split horizontal" },
-    { "<Leader>s",  group = "Split/Select" },
+    { "<Leader>s",  group = "Split/Select", icon = "" },
     { "<Leader>sv", "<C-w>v",              desc = "Split verticle" },
     { "<Leader>sh", "<C-w>s",              desc = "Split horizontal" },
     { "<Leader>s=", "<C-w>=",              desc = "Make split equal size" },

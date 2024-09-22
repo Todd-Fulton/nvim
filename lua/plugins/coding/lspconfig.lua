@@ -55,7 +55,7 @@ local function toggle_symantic_tokens(silent)
 end
 
 local default_lsp_keymaps = {
-  { "<Leader>l", group = "Lsp" },
+  { "<Leader>l", group = "LSP", icon = "" },
   { "<Leader>ls", group = "Search" },
   { "<Leader>lt", group = "Toggle" },
   ["textDocument/references"] = {
