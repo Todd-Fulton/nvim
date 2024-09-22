@@ -48,8 +48,8 @@ return {
           },
         },
         indent = {
-          enable = true,
-          disable = { "lua", },
+          enable = false,
+          disable = { "lua", "c", },
         },
         textobjects = {
           swap = {
