@@ -5,8 +5,8 @@ opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.numberwidth = 2
 opt.wrap = false
-opt.scrolloff = 10           -- lines to keep above/below cursor
-opt.sidescrolloff = 8        -- columns to keep left/right cursor
+opt.scrolloff = 10    -- lines to keep above/below cursor
+opt.sidescrolloff = 8 -- columns to keep left/right cursor
 
 opt.expandtab = true
 opt.tabstop = 2
@@ -15,6 +15,7 @@ opt.shiftwidth = 2
 opt.breakindent = true
 opt.smartindent = true
 opt.autoindent = true
+
 opt.virtualedit = "block"
 opt.inccommand = "split"
 opt.backspace = "indent,eol,start"
@@ -123,9 +124,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
 
 -- For C++ files, set indent width to 4
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp" },
+  pattern = { "cpp" },
   callback = function()
     vim.api.nvim_set_option_value("shiftwidth", 4, {
+      scope = "local",
+    })
+    vim.api.nvim_set_option_value("softtabstop", 4, {
       scope = "local",
     })
     vim.api.nvim_set_option_value("tabstop", 4, {
@@ -133,4 +137,3 @@ vim.api.nvim_create_autocmd("FileType", {
     })
   end
 })
-
