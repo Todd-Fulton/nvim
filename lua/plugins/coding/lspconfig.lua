@@ -1,4 +1,4 @@
-local has_trouble = require "user.configs.keymaps".is_installed("trouble.nvim")
+local has_trouble = require("user.configs.keymaps").is_installed "trouble.nvim"
 
 local function activate_codelens()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -7,14 +7,15 @@ local function activate_codelens()
     buffer = bufnr,
     group = group,
     desc = "Refresh codelens",
-    callback = function()
-      vim.lsp.codelens.refresh({ bufnr = bufnr })
-    end,
+    callback = function() vim.lsp.codelens.refresh { bufnr = bufnr } end,
   })
-  vim.lsp.codelens.refresh({ bufnr = bufnr })
-  vim.keymap.set({ "n" },
-    "<leader>llr", function() vim.lsp.codelens.refresh { bufnr = bufnr } end,
-    { desc = "Refresh codelens", buffer = bufnr })
+  vim.lsp.codelens.refresh { bufnr = bufnr }
+  vim.keymap.set(
+    { "n" },
+    "<leader>llr",
+    function() vim.lsp.codelens.refresh { bufnr = bufnr } end,
+    { desc = "Refresh codelens", buffer = bufnr }
+  )
   vim.keymap.set({ "n" }, "<leader>llR", vim.lsp.codelens.run, { desc = "Run codelens", buffer = bufnr })
 end
 
@@ -22,10 +23,9 @@ local function deactivate_codelens()
   local bufnr = vim.api.nvim_get_current_buf()
   vim.keymap.del({ "n" }, "<leader>llr", { buffer = bufnr })
   vim.keymap.del({ "n" }, "<leader>llR", { buffer = bufnr })
-  vim.api.nvim_clear_autocmds({ group = "lsp_codelens", buffer = bufnr })
+  vim.api.nvim_clear_autocmds { group = "lsp_codelens", buffer = bufnr }
   vim.lsp.codelens.clear(nil, bufnr)
 end
-
 
 local function set_symantic_tokens(bufnr, on, silent)
   bufnr = bufnr or 0
@@ -36,11 +36,18 @@ local function set_symantic_tokens(bufnr, on, silent)
       vim.lsp.semantic_tokens.force_refresh(bufnr)
     end
   end
-  if silent == false then
-    vim.notify(("Symantic highlighting has been %s"):format(on and "enabled" or "disabled"))
-  end
+  if silent == false then vim.notify(("Symantic highlighting has been %s"):format(on and "enabled" or "disabled")) end
 end
 
+local lsp_format = function(bufnr)
+  vim.lsp.buf.format {
+    filter = function(client)
+      -- apply whatever logic you want (in this example, we'll only use null-ls)
+      return client.name == "null-ls"
+    end,
+    bufnr = bufnr,
+  }
+end
 
 local function toggle_symantic_tokens(silent)
   local bufnr = vim.api.nvim_get_current_buf()
@@ -48,7 +55,7 @@ local function toggle_symantic_tokens(silent)
 end
 
 local default_lsp_keymaps = {
-  { "<Leader>l",  group = "Lsp" },
+  { "<Leader>l", group = "Lsp" },
   { "<Leader>ls", group = "Search" },
   { "<Leader>lt", group = "Toggle" },
   ["textDocument/references"] = {
@@ -77,26 +84,29 @@ local default_lsp_keymaps = {
     desc = "Type definitions",
   },
   ["textDocument/codeAction"] = {
-    "<Leader>la", vim.lsp.buf.code_action, desc = "Code actions",
+    "<Leader>la",
+    vim.lsp.buf.code_action,
+    desc = "Code actions",
   },
   ["textDocument/rename"] = {
-    "<Leader>lr", vim.lsp.buf.rename, desc = "Smart rename",
+    "<Leader>lr",
+    vim.lsp.buf.rename,
+    desc = "Smart rename",
   },
   ["textDocument/hover"] = { "K", vim.lsp.buf.hover, desc = "Show documentation" },
-  ["textDocument/format"] = { "<Leader>lf", vim.lsp.buf.format, desc = "Format document" },
   ["textDocument/publishDiagnostics"] = {
-    { "<Leader>ld",  group = "Diagnostics" },
+    { "<Leader>ld", group = "Diagnostics" },
     {
       "<Leader>ldb",
       "<cmd>Telescope diagnostics bufnr=0<cr>",
       desc = "Buffer diagnostics",
     },
     { "<Leader>ldl", vim.diagnostic.open_float, desc = "Line diagnostics" },
-    { "<Leader>ldn", vim.diagnostic.goto_next,  desc = "Next" },
-    { "<Leader>ldp", vim.diagnostic.goto_prev,  desc = "Prev" },
-    { "[e",          vim.diagnostic.goto_prev,  desc = "Previous diagnostic" },
-    { "]e",          vim.diagnostic.goto_next,  desc = "Next diagnostic" },
-    { "<Leader>lx",  group = "Trouble",         cond = has_trouble },
+    { "<Leader>ldn", vim.diagnostic.goto_next, desc = "Next" },
+    { "<Leader>ldp", vim.diagnostic.goto_prev, desc = "Prev" },
+    { "[e", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
+    { "]e", vim.diagnostic.goto_next, desc = "Next diagnostic" },
+    { "<Leader>lx", group = "Trouble", cond = has_trouble },
     {
       "<leader>lxw",
       "<cmd>Trouble diagnostics toggle<CR>",
@@ -110,8 +120,8 @@ local default_lsp_keymaps = {
       desc = "Open trouble document diagnostics",
     },
     { "<leader>lxq", "<cmd>Trouble quickfix toggle<CR>", cond = has_trouble, desc = "Open trouble quickfix list" },
-    { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>",  cond = has_trouble, desc = "Open trouble location list" },
-    { "<leader>lxt", "<cmd>Trouble todo toggle<CR>",     cond = has_trouble, desc = "Open todos in trouble" },
+    { "<leader>lxl", "<cmd>Trouble loclist toggle<CR>", cond = has_trouble, desc = "Open trouble location list" },
+    { "<leader>lxt", "<cmd>Trouble todo toggle<CR>", cond = has_trouble, desc = "Open todos in trouble" },
   },
 
   ["textDocument/codeLens"] = {
@@ -132,9 +142,7 @@ local default_lsp_keymaps = {
   ["textDocument/inlayHint"] = {
     {
       "<Leader>lti",
-      function()
-        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-      end,
+      function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end,
       desc = "Toggle inlay hint",
     },
   },
@@ -143,7 +151,7 @@ local default_lsp_keymaps = {
     {
       "<Leader>lss",
       function()
-        require("telescope.builtin").lsp_document_symbols({
+        require("telescope.builtin").lsp_document_symbols {
           symbols = {
             "class",
             "function",
@@ -156,18 +164,18 @@ local default_lsp_keymaps = {
             "interface",
             "struct",
             "variable",
-          }
-        })
+          },
+        }
       end,
-      desc = "Document symbols (Telescope)"
-    }
+      desc = "Document symbols (Telescope)",
+    },
   },
 
   ["workspace/symbol"] = {
     {
       "<Leader>lsw",
       function()
-        require("telescope.builtin").lsp_workspace_symbols({
+        require("telescope.builtin").lsp_workspace_symbols {
           symbols = {
             "class",
             "function",
@@ -178,16 +186,16 @@ local default_lsp_keymaps = {
             "interface",
             "struct",
             "variable",
-          }
-        })
+          },
+        }
       end,
-      desc = "Workspace symbols (Telescope)"
+      desc = "Workspace symbols (Telescope)",
     },
 
     {
       "<Leader>lsS",
       function()
-        require("telescope.builtin").lsp_dynamic_workspace_symbols({
+        require("telescope.builtin").lsp_dynamic_workspace_symbols {
           symbols = {
             "class",
             "function",
@@ -198,20 +206,18 @@ local default_lsp_keymaps = {
             "interface",
             "struct",
             "variable",
-          }
-        })
+          },
+        }
       end,
-      desc = "Workspace symbols (Telescope)"
+      desc = "Workspace symbols (Telescope)",
     },
   },
 
   ["textDocument/semanticTokens/full"] = {
     {
       "<Leader>lts",
-      function()
-        toggle_symantic_tokens(false)
-      end,
-      desc = "Toggle symantic highlighting"
+      function() toggle_symantic_tokens(false) end,
+      desc = "Toggle symantic highlighting",
     },
   },
 
@@ -220,35 +226,28 @@ local default_lsp_keymaps = {
     ["callHierarchy/incomingCalls"] = {
       "<Leader>lhi",
       "<CMD>Telescope lsp_incoming_calls<CR>",
-      desc = "Show incoming calls"
+      desc = "Show incoming calls",
     },
 
     ["callHierarchy/outgoingCalls"] = {
       "<Leader>lho",
       "<CMD>Telescope lsp_outgoing_calls<CR>",
-      desc = "Show outgoing calls"
+      desc = "Show outgoing calls",
     },
-  }
+  },
 }
 
 local default_aucmds = {
   ["textDocument/codeLens"] = {
     function()
-      if vim.g.codelens_enabled then
-        activate_codelens()
-      end
+      if vim.g.codelens_enabled then activate_codelens() end
     end,
   },
 }
 
+local function is_keybinding(map) return map["desc"] ~= nil or map["group"] ~= nil end
 
-local function is_keybinding(map)
-  return map["desc"] ~= nil or map["group"] ~= nil
-end
-
-local function is_lsp_method(key)
-  return type(key) == "string" and vim.lsp.handlers[key] ~= nil
-end
+local function is_lsp_method(key) return type(key) == "string" and vim.lsp.handlers[key] ~= nil end
 
 --- TODO: lsp.Keymap should support a way for functions to request arbitrary arguments
 --- such as client id, buf number, opts, etc...
@@ -261,9 +260,7 @@ local function parse_keymaps(client, mappings, opts)
     else
       for k, v in pairs(map) do
         if is_lsp_method(k) then
-          if client.supports_method(k, { bufnr = opts.buffer }) then
-            loop(v)
-          end
+          if client.supports_method(k, { bufnr = opts.buffer }) then loop(v) end
         else
           loop(v)
         end
@@ -286,10 +283,10 @@ return {
     },
     config = function()
       -- import lspconfig plugin
-      local lspconfig = require("lspconfig")
+      local lspconfig = require "lspconfig"
 
       -- import cmp-nvim-lsp plugin
-      local cmp_nvim_lsp = require("cmp_nvim_lsp")
+      local cmp_nvim_lsp = require "cmp_nvim_lsp"
 
       -- setup default configuration, keybindings, etc.
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -303,10 +300,16 @@ return {
           -- set keybinds
           parse_keymaps(client, default_lsp_keymaps, { buffer = ev.buf, silent = true })
 
+          if client.supports_method "textDocument/format" then
+            vim.keymap.set(
+              "n",
+              "<Leader>lf",
+              function() lsp_format(ev.buf) end,
+              { buffer = ev.buf, noremap = true, desc = "Format document" }
+            )
+          end
           for k, v in pairs(default_aucmds or {}) do
-            if client.supports_method(k) then
-              v[1]()
-            end
+            if client.supports_method(k) then v[1]() end
           end
 
           -- TODO: use an option to disable in user configs
@@ -323,13 +326,13 @@ return {
           if client.name == "clangd" then
             require "clangd_extensions"
             local wk = require "which-key"
-            wk.add({
+            wk.add {
               "<Leader>lz",
               "<CMD>ClangdSwitchSourceHeader<CR>",
               desc = "switch source/header file",
               buffer = ev.buf,
               silent = true,
-            })
+            }
           end
         end,
       })
@@ -344,7 +347,7 @@ return {
       local signs = { [ds.ERROR] = " ", [ds.WARN] = " ", [ds.HINT] = "󰠠 ", [ds.INFO] = " " }
 
       -- Configure diagnostics
-      vim.diagnostic.config({
+      vim.diagnostic.config {
         -- sort by severity
         severity_sort = true,
         float = {
@@ -355,22 +358,20 @@ return {
         signs = { text = signs },
         -- Don't use a prefix, the sign is in the sign column
         virtual_text = {
-          virt_text_pos = 'eol',
+          virt_text_pos = "eol",
           prefix = "",
-        }
-      })
+        },
+      }
 
       -- Setup bordered ui for LspInfo
       require("lspconfig.ui.windows").default_options.border = "rounded"
 
       -- used to enable autocompletion (assign to every lsp server config)
-      local capabilities = cmp_nvim_lsp.default_capabilities(
-        vim.lsp.protocol.make_client_capabilities()
-      )
+      local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
       capabilities.textDocument.foldingRange = {
         dynamicRegistration = false,
-        lineFoldingOnly = true
+        lineFoldingOnly = true,
       }
 
       -- Load top level configs for modularity
@@ -382,15 +383,12 @@ return {
         -- TODO: Handle not status
         if status then
           server_config.default_config.handlers =
-              vim.tbl_deep_extend('keep',
-                server_config.default_config.handlers or {},
-                user_config.handlers)
+            vim.tbl_deep_extend("keep", server_config.default_config.handlers or {}, user_config.handlers)
           -- override default config with user config
           config = vim.tbl_deep_extend("keep", config, server_config.default_config)
-          config = vim.tbl_deep_extend("keep", config,
-            {
-              capabilities = capabilities,
-            })
+          config = vim.tbl_deep_extend("keep", config, {
+            capabilities = capabilities,
+          })
           lspconfig[server].setup(config)
         end
       end
