@@ -604,10 +604,9 @@ return {
   -- takes a LazyPlugin
   init = function(_)
     -- Setup keymaps specific to neo-tree
-    local km = require 'user.configs.keymaps.init'
+    local wk = require 'which-key'
 
-    km.add({
-      mode = { "n" },
+    wk.add({
       {
         "<Leader>o",
         function()
