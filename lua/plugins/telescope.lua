@@ -23,8 +23,7 @@ return {
   },
   init = function()
     -- Setup mappings
-    require 'user.configs.keymaps.init'.add({
-      mode = { "n" },
+    require 'which-key'.add({
       { "<Leader>f", group = "Find", icon = "" },
     })
   end,
