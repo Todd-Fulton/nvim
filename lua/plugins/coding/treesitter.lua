@@ -1,23 +1,24 @@
----@type LazySpec
 return {
   {
     "nvim-treesitter/nvim-treesitter",
     event = { "BufReadPre", "BufNewFile" },
-    build = ":TSUpdate",
+    run = ":TSUpdate",
     config = function()
+      local asm_parser_path = "/home/todd/projects/tree-sitter-asm"
       ---@class ParserInfo[]
       local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
       parser_config.asm = {
         install_info = {
-          url = "~/projects/tree-sitter-asm", -- local path or git repo
-          files = { "src/parser.c" },         -- note that some parsers also require src/scanner.c or src/scanner.cc
+          url = asm_parser_path, -- local path or git repo
+          files = { "src/parser.c", "src/scanner.c" },         -- note that some parsers also require src/scanner.c or src/scanner.cc
           -- optional entries:
-          branch = "work",                    -- default branch in case of git repo if different from master
-          -- generate_requires_npm = false, -- if stand-alone parser without npm dependencies
-          -- requires_generate_from_grammar = false, -- if folder contains pre-generated src/parser.c
-          revision = "b016cfba7387b1c605862124295f2b072dcc8c67",
+          branch = "scanner",                    -- default branch in case of git repo if different from master
+          -- generate_requires_npm = true, -- if stand-alone parser without npm dependencies
+          -- requires_generate_from_grammar = true, -- if folder contains pre-generated src/parser.c
+          revision = "0a1b76fc5fa3d62c9d7b03774ccb0c11e4e0aa92",
         },
       }
+      vim.opt.rtp:prepend(asm_parser_path)
       ---@diagnostic disable-next-line: missing-fields
       require "nvim-treesitter.configs".setup {
         ensure_installed = {
