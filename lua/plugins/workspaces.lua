@@ -29,7 +29,7 @@ return {
         vim.bo[scratch].bufhidden = "wipe"
         vim.api.nvim_win_set_buf(0, scratch)
         vim.bo[scratch].buftype = ""
-        if #vim.api.nvim_list_wins() > 1 then vim.cmd.only() end
+        if #vim.api.nvim_tabpage_list_wins(vim.api.nvim_get_current_tabpage()) > 1 then vim.cmd.only() end
         for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
           if vim.bo[bufnr].buflisted then bd(bufnr, true) end
         end
