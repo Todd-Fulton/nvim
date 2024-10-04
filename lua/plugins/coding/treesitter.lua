@@ -15,7 +15,7 @@ return {
           branch = "scanner",                    -- default branch in case of git repo if different from master
           -- generate_requires_npm = true, -- if stand-alone parser without npm dependencies
           -- requires_generate_from_grammar = true, -- if folder contains pre-generated src/parser.c
-          revision = "0a1b76fc5fa3d62c9d7b03774ccb0c11e4e0aa92",
+          -- revision = "0a1b76fc5fa3d62c9d7b03774ccb0c11e4e0aa92",
         },
       }
       vim.opt.rtp:prepend(asm_parser_path)

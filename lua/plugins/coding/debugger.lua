@@ -40,6 +40,17 @@ return {
               noremap = true,
             },
             {
+              "<Leader>dd",
+              function()
+                require("dap.ext.vscode").load_launchjs(nil, {lldb = {"c", "cpp"}})
+                require("dap").continue({new = true})
+              end,
+              icon = " ",
+              desc = "Start debugging session",
+              buffer = ev.buf,
+              noremap = true,
+            },
+            {
               "<Leader>dC",
               function() require("dap").continue() end,
               icon = " ",
@@ -73,9 +84,17 @@ return {
             },
             {
               "<Leader>dS",
-              function() require("dap").stop() end,
+              function() require("dap").close() end,
               icon = " ",
               desc = "Stop",
+              buffer = ev.buf,
+              noremap = true,
+            },
+            {
+              "<Leader>du",
+              function() require("dapui").toggle() end,
+              icon = "",
+              desc = "Toggle dap ui",
               buffer = ev.buf,
               noremap = true,
             },
@@ -121,7 +140,7 @@ return {
             },
             {
               "<M-s>",
-              function() require("dap").stop() end,
+              function() require("dap").close() end,
               icon = " ",
               desc = "Stop",
               buffer = ev.buf,
@@ -133,19 +152,27 @@ return {
     end,
     config = function(_, _)
       local dap, dapui = require "dap", require "dapui"
-      local dap_configs = require "user.configs.dap.init"
+      local dap_configs = require "user.configs.dap"
       for adapter, map in pairs(dap_configs.adapters) do
-        dap[adapter] = map
+        dap.adapters[adapter] = map
       end
       for config, map in pairs(dap_configs.configurations) do
-        dap[config] = map
+        dap.configurations[config] = map
       end
       dap.configurations.c = dap.configurations.cpp
       require "nvim-dap-virtual-text"
-      dap.listeners.before.attach.dapui_config = function() dapui.open() end
-      dap.listeners.before.launch.dapui_config = function() dapui.open() end
-      dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
-      dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl="DiagnosticInfo" })
       vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl="DiagnosticInfo" })
       vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl="DiagnosticError" })

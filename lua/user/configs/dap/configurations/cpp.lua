@@ -1,4 +1,5 @@
 return {
+  {
   name = 'LLDB: Launch',
   type = 'lldb',
   request = 'launch',
@@ -21,4 +22,5 @@ return {
   -- But you should be aware of the implications:
   -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
   runInTerminal = false,
+}
 }
